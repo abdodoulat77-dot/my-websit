@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl" data-theme="dark">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>IPO TV</title>
 <link rel="stylesheet" href="./style.css">
 </head>
@@ -40,7 +40,7 @@
     <div id="tab-home" class="tab-content active">
       <h2>اختر القسم المناسب</h2>
       
-      <div class="menu-card" onclick="switchPage('live', 'مباريات اليوم')">
+      <div class="menu-card" onclick="switchPage('live', 'مباريات اليوم', true)">
         <div class="menu-logo-container">
           <img src="https://i.ibb.co/QFcpBFJm/unnamed.png" alt="مباريات اليوم" class="menu-logo">
         </div>
@@ -50,7 +50,7 @@
         </div>
       </div>
 
-      <div class="menu-card" onclick="switchPage('leagues', 'جدول الدوريات')">
+      <div class="menu-card" onclick="switchPage('leagues', 'جدول الدوريات', true)">
         <div class="menu-logo-container">
           <img src="https://i.ibb.co/3mzLZ79m/pngtree-football-championship-gold-emblem-png-image-14121607.png" alt="جدول الدوريات" class="menu-logo">
         </div>
@@ -60,7 +60,7 @@
         </div>
       </div>
 
-      <div class="menu-card" onclick="openAuthPage()">
+      <div class="menu-card" onclick="openAuthPage(true)">
         <div class="menu-logo-container">
           <img src="https://i.ibb.co/6y45s1x/user.png" alt="حسابي" class="menu-logo">
         </div>
@@ -74,28 +74,28 @@
     <!-- صفحة مباريات اليوم -->
     <div id="tab-live" class="tab-content">
       <div class="back-nav">
-        <button class="back-btn" onclick="goBackToHome()">
-          <span class="back-icon-shape"></span> العودة للرئيسية
+        <button class="back-btn" onclick="goBack()">
+          <span class="back-icon-shape"></span> رجوع للخلف
         </button>
       </div>
       <h2>مباريات اليوم (2026-2027)</h2>
       <div class="card" style="text-align: center; padding: 30px 15px;">
-        <div class="card-title" style="font-size: 14px; margin-bottom: 6px;">لا توجد مواجهات اليوم</div>
-        <div class="card-desc" style="margin-bottom: 0;">المستطيل الأخضر يستعد لإشعال حماس موسم 2026-2027 قريباً!</div>
+        <div class="no-matches-message" style="color: var(--text-primary); font-weight: 700; font-size: 13px; margin-bottom: 6px;">لا توجد مواجهات اليوم</div>
+        <div style="color: var(--text-secondary); font-size: 11px; margin-top: 6px; margin-bottom: 0;">المستطيل الأخضر يستعد لإشعال حماس موسم 2026-2027 قريباً!</div>
       </div>
     </div>
 
     <!-- صفحة جدول الدوريات -->
     <div id="tab-leagues" class="tab-content">
       <div class="back-nav">
-        <button class="back-btn" onclick="goBackToHome()">
-          <span class="back-icon-shape"></span> العودة للرئيسية
+        <button class="back-btn" onclick="goBack()">
+          <span class="back-icon-shape"></span> رجوع للخلف
         </button>
       </div>
       <h2>الدوريات الخمس الكبرى (2026-2027)</h2>
       
       <div class="modern-leagues-grid">
-        <div class="league-option-card" onclick="openLeagueDetails('4328', 'الدوري الإنجليزي')">
+        <div class="league-option-card" onclick="openLeagueDetails('4328', 'الدوري الإنجليزي', true)">
           <div class="league-info-flex">
             <img src="https://i.ibb.co/99xq7xQY/download-removebg-preview.png" alt="الدوري الإنجليزي" class="league-logo-img">
             <span class="league-name-text">الدوري الإنجليزي</span>
@@ -103,7 +103,7 @@
           <span class="league-arrow-icon">◀</span>
         </div>
 
-        <div class="league-option-card" onclick="openLeagueDetails('4335', 'الدوري الإسباني')">
+        <div class="league-option-card" onclick="openLeagueDetails('4335', 'الدوري الإسباني', true)">
           <div class="league-info-flex">
             <img src="https://i.ibb.co/DHPs9pcK/download-removebg-preview-1.png" alt="الدوري الإسباني" class="league-logo-img">
             <span class="league-name-text">الدوري الإسباني</span>
@@ -111,7 +111,7 @@
           <span class="league-arrow-icon">◀</span>
         </div>
 
-        <div class="league-option-card" onclick="openLeagueDetails('4332', 'الدوري الإيطالي')">
+        <div class="league-option-card" onclick="openLeagueDetails('4332', 'الدوري الإيطالي', true)">
           <div class="league-info-flex">
             <img src="https://i.ibb.co/d4WMJFCt/images-removebg-preview.png" alt="الدوري الإيطالي" class="league-logo-img">
             <span class="league-name-text">الدوري الإيطالي</span>
@@ -119,7 +119,7 @@
           <span class="league-arrow-icon">◀</span>
         </div>
 
-        <div class="league-option-card" onclick="openLeagueDetails('4331', 'الدوري الألماني')">
+        <div class="league-option-card" onclick="openLeagueDetails('4331', 'الدوري الألماني', true)">
           <div class="league-info-flex">
             <img src="https://i.ibb.co/xKZ7QxyT/download-removebg-preview-2.png" alt="الدوري الألماني" class="league-logo-img">
             <span class="league-name-text">الدوري الألماني</span>
@@ -127,7 +127,7 @@
           <span class="league-arrow-icon">◀</span>
         </div>
 
-        <div class="league-option-card" onclick="openLeagueDetails('4334', 'الدوري الفرنسي')">
+        <div class="league-option-card" onclick="openLeagueDetails('4334', 'الدوري الفرنسي', true)">
           <div class="league-info-flex">
             <img src="https://i.ibb.co/JW1gT7pd/images-removebg-preview-1.png" alt="الدوري الفرنسي" class="league-logo-img">
             <span class="league-name-text">الدوري الفرنسي</span>
@@ -140,12 +140,12 @@
     <!-- صفحة تفاصيل الدوري وترتيبه -->
     <div id="tab-league-details" class="tab-content">
       <div class="back-nav">
-        <button class="back-btn" onclick="switchPage('leagues', 'جدول الدوريات')">
-          <span class="back-icon-shape"></span> العودة للدوريات
+        <button class="back-btn" onclick="goBack()">
+          <span class="back-icon-shape"></span> رجوع للخلف
         </button>
       </div>
       <h2 id="league-details-title">ترتيب الدوري</h2>
-      <div class="card" id="league-standings-container" style="padding: 8px; font-size: 10px; max-height: 380px; overflow-y: auto;">
+      <div class="card" id="league-standings-container" style="padding: 8px; font-size: 10px; max-height: 420px; overflow-y: auto;">
         <div style="text-align: center; padding: 20px; color: var(--text-primary);">جاري جلب جدول الترتيب لموسم 2026-2027...</div>
       </div>
     </div>
@@ -153,8 +153,8 @@
     <!-- صفحة المصادقة والملف الشخصي -->
     <div id="tab-auth" class="tab-content">
       <div class="back-nav">
-        <button class="back-btn" onclick="goBackToHome()">
-          <span class="back-icon-shape"></span> العودة للرئيسية
+        <button class="back-btn" onclick="goBack()">
+          <span class="back-icon-shape"></span> رجوع للخلف
         </button>
       </div>
       
@@ -173,17 +173,14 @@
         <div class="form-group">
           <label>اسم المستخدم</label>
           <input type="text" id="reg-name" placeholder="أدخل اسمك هنا">
-          <div id="reg-name-error" class="error-message">⚠️ هذا الحقل فارغ.</div>
         </div>
         <div class="form-group">
           <label>البريد الإلكتروني</label>
           <input type="text" id="reg-email" placeholder="example@gmail.com">
-          <div id="reg-email-error" class="error-message">⚠️ البريد الإلكتروني غير صحيح.</div>
         </div>
         <div class="form-group">
           <label>كلمة المرور</label>
           <input type="password" id="reg-pass" placeholder="••••••••">
-          <div id="reg-pass-error" class="error-message">⚠️ كلمة المرور قصيرة (6 أحرف على الأقل).</div>
         </div>
         <button class="action-btn" onclick="registerUserAccount()">إنشاء وتسجيل الحساب</button>
         <div class="auth-switch-text">لديك حساب بالفعل؟ <span onclick="toggleAuthMode('login')">سجل دخولك من هنا</span></div>
@@ -194,18 +191,16 @@
         <div class="form-group">
           <label>البريد الإلكتروني أو اسم المستخدم</label>
           <input type="text" id="login-user" placeholder="example@gmail.com أو الاسم">
-          <div id="login-user-error" class="error-message">⚠️ هذا الحقل فارغ.</div>
         </div>
         <div class="form-group">
           <label>كلمة المرور</label>
           <input type="password" id="login-pass" placeholder="••••••••">
-          <div id="login-pass-error" class="error-message">⚠️ كلمة المرور خاطئة.</div>
         </div>
         <button class="action-btn" onclick="verifyLogin()">تسجيل الدخول</button>
         <div class="auth-switch-text">ليس لديك حساب؟ <span onclick="toggleAuthMode('register')">أنشئ حساباً جديداً</span></div>
       </div>
 
-      <!-- عرض الملف الشخصي مع البايو وزر تغيير الغلاف -->
+      <!-- عرض الملف الشخصي مع البايو -->
       <div id="user-profile-container" style="display: none;">
         <div class="card" style="padding: 0; overflow: hidden; position: relative;">
           
@@ -226,13 +221,36 @@
             <h3 id="profile-name" style="margin: 0; font-size: 15px; font-weight: bold; color: var(--text-primary);">اسم المستخدم</h3>
             <p id="profile-email" style="margin: 2px 0 8px 0; font-size: 11px; opacity: 0.7; color: var(--text-primary);">email@gmail.com</p>
 
-            <!-- حقل البايو (النبذة التعريفية) القابل للكتابة والحفظ الفوري -->
+            <!-- حقل البايو ونظام التعديل والحفظ -->
             <div style="margin-bottom: 12px; text-align: right;">
-              <label style="font-size: 11px; opacity: 0.8; display: block; margin-bottom: 3px; color: var(--text-primary);">نبذة عني (البايو):</label>
-              <textarea id="profile-bio-input" rows="2" placeholder="اكتب نبذة تعريفية عنك هنا..." oninput="saveUserBio(this.value)" style="width: 100%; padding: 8px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color, rgba(255,255,255,0.1)); background: var(--input-bg, rgba(255,255,255,0.05)); color: var(--text-primary); resize: none; outline: none; box-sizing: border-box;"></textarea>
+              
+              <!-- وضع العرض -->
+              <div id="bio-view-mode" style="display: none; text-align: center; padding: 4px 0;">
+                <p id="bio-display-text" style="font-size: 12px; color: var(--text-primary); margin: 0 0 10px 0; word-break: break-word; line-height: 1.4;"></p>
+                <button onclick="enableBioEdit()" class="fb-profile-action-btn">
+                  <span style="font-size: 14px;">✏️</span> تعديل البايو
+                </button>
+              </div>
+
+              <!-- وضع التعديل -->
+              <div id="bio-edit-mode" style="position: relative;">
+                <label style="font-size: 11px; font-weight: 700; opacity: 0.9; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; color: var(--text-primary);">
+                  <span>✍️</span> تعديل النبذة التعريفية (البايو):
+                </label>
+                <textarea id="profile-bio-input" rows="2" placeholder="اكتب نبذة تعريفية مميزة عنك..." style="width: 100%; padding: 10px; font-size: 12px; border-radius: 10px; border: 1.5px solid var(--accent-color, #3b82f6); background: var(--input-bg, rgba(255,255,255,0.05)); color: var(--text-primary); resize: none; outline: none; box-sizing: border-box; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);"></textarea>
+                <div style="display: flex; gap: 8px;">
+                  <button onclick="saveUserBio()" class="fb-save-btn">
+                    <span>💾</span> حفظ التغييرات
+                  </button>
+                  <button onclick="cancelBioEdit()" class="fb-cancel-btn">
+                    <span>✕</span> إلغاء
+                  </button>
+                </div>
+              </div>
+
             </div>
 
-            <label for="cover-image-input" style="display: block; width: 100%; padding: 8px; background: var(--accent-color, #3b82f6); color: #fff; font-size: 12px; border-radius: 6px; cursor: pointer; text-align: center; box-sizing: border-box; font-weight: bold;">
+            <label for="cover-image-input" style="display: block; width: 100%; padding: 8px; background: var(--accent-color, #3b82f6); color: #fff; font-size: 12px; border-radius: 6px; cursor: pointer; text-align: center; box-sizing: border-box; font-weight: bold; margin-top: 8px;">
               🖼️ تغيير غلاف الحساب
             </label>
           </div>

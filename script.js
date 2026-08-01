@@ -1,384 +1,346 @@
-// المتغيرات العامة لجلسة المستخدم
-let currentActiveTab = 'tab-home';
+// حالة التنقل لمنع التداخل العكسي
+  let isNavigatingBySystem = false;
 
-// تشغيل الوظائف واسترجاع البيانات المحفوظة والتحكم بزر الرجوع للهاتف عند فتح التطبيق
-window.onload = function() {
-  checkActiveSession();
-  
-  // تفعيل زر الرجوع الخاص بالهاتف (Browser History)
-  window.onpopstate = function(event) {
-    if (event.state && event.state.tabId) {
-      silentSwitchPage(event.state.tabId, event.state.titleText);
-    } else {
-      silentSwitchPage('home', 'IPO TV');
-    }
-  };
-
-  history.replaceState({ tabId: 'home', titleText: 'IPO TV' }, '', '');
-};
-
-// ==========================================
-// 1. نظام التنقل بين صفحات التطبيق (مع دعم زر الهاتف)
-// ==========================================
-function switchPage(tabId, titleText, pushToHistory = true) {
-  const tabs = document.querySelectorAll('.tab-content');
-  tabs.forEach(tab => tab.classList.remove('active'));
-
-  const targetTab = document.getElementById('tab-' + tabId);
-  if (targetTab) {
-    targetTab.classList.add('active');
-    currentActiveTab = 'tab-' + tabId;
-  }
-
-  const headerTitle = document.getElementById('header-title');
-  if (headerTitle && titleText) {
-    headerTitle.innerText = titleText;
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  if (pushToHistory) {
-    history.pushState({ tabId: tabId, titleText: titleText }, '', '');
-  }
-}
-
-function silentSwitchPage(tabId, titleText) {
-  const tabs = document.querySelectorAll('.tab-content');
-  tabs.forEach(tab => tab.classList.remove('active'));
-
-  const targetTab = document.getElementById('tab-' + tabId);
-  if (targetTab) {
-    targetTab.classList.add('active');
-    currentActiveTab = 'tab-' + tabId;
-  }
-
-  const headerTitle = document.getElementById('header-title');
-  if (headerTitle && titleText) {
-    headerTitle.innerText = titleText;
-  }
-
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-function goBackToHome() {
-  switchPage('home', 'IPO TV');
-}
-
-// ==========================================
-// 2. نظام التبديل بين الوضع الداكن والفاتح (مع الحفظ)
-// ==========================================
-function toggleTheme() {
-  const htmlElement = document.documentElement;
-  const currentTheme = htmlElement.getAttribute('data-theme');
-  const themeText = document.getElementById('theme-text');
-  const themeIconSymbol = document.getElementById('theme-icon-symbol');
-
-  if (currentTheme === 'dark') {
-    htmlElement.setAttribute('data-theme', 'light');
-    if (themeText) themeText.innerText = 'الوضع الفاتح';
-    if (themeIconSymbol) themeIconSymbol.innerText = '☀️';
-    localStorage.setItem('ipo_theme', 'light');
-  } else {
-    htmlElement.setAttribute('data-theme', 'dark');
-    if (themeText) themeText.innerText = 'الوضع الداكن';
-    if (themeIconSymbol) themeIconSymbol.innerText = '🌙';
-    localStorage.setItem('ipo_theme', 'dark');
-  }
-}
-
-(function loadSavedTheme() {
-  const savedTheme = localStorage.getItem('ipo_theme');
-  if (savedTheme) {
-    document.documentElement.setAttribute('data-theme', savedTheme);
-    setTimeout(() => {
-      const themeText = document.getElementById('theme-text');
-      const themeIconSymbol = document.getElementById('theme-icon-symbol');
-      if (savedTheme === 'light') {
-        if (themeText) themeText.innerText = 'الوضع الفاتح';
-        if (themeIconSymbol) themeIconSymbol.innerText = '☀️';
-      }
-    }, 50);
-  }
-})();
-
-// ==========================================
-// 3. جلب بيانات الدوريات الحقيقية والصحيحة 100% (بدون أخطاء)
-// ==========================================
-function openLeagueDetails(leagueCode, leagueName) {
-  switchPage('league-details', leagueName);
-  document.getElementById('league-details-title').innerText = 'ترتيب ' + leagueName;
-  const container = document.getElementById('league-standings-container');
-  container.innerHTML = '<div style="text-align: center; padding: 25px; color: var(--text-primary); font-size: 12px;">جاري جلب جدول الترتيب المحدث...</div>';
-
-  // استخدام الرابط المباشر والمستقر للدوريات الكبرى
-  const apiUrl = `https://api.football-data.org/v4/competitions/${leagueCode}/standings`;
-
-  // ملاحظة: في حال لم تستخدم مفتاح ترخيص خاص بك، يمكنك استخدام الرابط العام أو إضافة رأس الطلب إن توفر. 
-  // سنستعين بدعم بديل ومستقر عبر وكيل عام مجاني لضمان عدم حظر الطلب من المتصفح:
-  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
-
-  fetch(proxyUrl)
-    .then(response => response.json())
-    .then(data => {
-      if (data && data.contents) {
-        const parsedData = JSON.parse(data.contents);
-        if (parsedData && parsedData.standings && parsedData.standings[0]) {
-          const tableRows = parsedData.standings[0].table;
-          
-          let html = `
-            <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 11px;">
-              <thead>
-                <tr style="border-bottom: 2px solid var(--border-color, rgba(255,255,255,0.15)); opacity: 0.9; background: var(--input-bg, rgba(255,255,255,0.03));">
-                  <th style="padding: 8px 4px;">#</th>
-                  <th style="padding: 8px 4px; text-align: right;">الفريق</th>
-                  <th style="padding: 8px 4px;">لعب</th>
-                  <th style="padding: 8px 4px;">فاز</th>
-                  <th style="padding: 8px 4px;">تعادل</th>
-                  <th style="padding: 8px 4px;">خسر</th>
-                  <th style="padding: 8px 4px;">نقاط</th>
-                </tr>
-              </thead>
-              <tbody>
-          `;
-          
-          tableRows.forEach(item => {
-            let team = item.team;
-            let teamBadge = team.crest ? team.crest : 'https://i.ibb.co/6y45s1x/user.png';
-
-            html += `
-              <tr style="border-bottom: 1px solid var(--border-color, rgba(255,255,255,0.06));">
-                <td style="padding: 8px 4px; font-weight: bold; color: var(--text-primary);">${item.position}</td>
-                <td style="padding: 8px 4px; text-align: right;">
-                  <div style="display: flex; align-items: center; gap: 6px;">
-                    <img src="${teamBadge}" style="width: 18px; height: 18px; object-fit: contain; flex-shrink: 0;" onerror="this.src='https://i.ibb.co/6y45s1x/user.png'">
-                    <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 110px; color: var(--text-primary); font-weight: 500;">${team.name}</span>
-                  </div>
-                </td>
-                <td style="padding: 8px 4px; color: var(--text-primary);">${item.playedGames}</td>
-                <td style="padding: 8px 4px; color: #22c55e;">${item.won}</td>
-                <td style="padding: 8px 4px; color: #eab308;">${item.draw}</td>
-                <td style="padding: 8px 4px; color: #ef4444;">${item.lost}</td>
-                <td style="padding: 8px 4px; font-weight: bold; color: var(--accent-color, #3b82f6); font-size: 12px;">${item.points}</td>
-              </tr>
-            `;
-          });
-          
-          html += '</tbody></table>';
-          container.innerHTML = html;
-          return;
-        }
-      }
-      container.innerHTML = '<div style="text-align: center; padding: 25px; color: var(--text-primary); font-size: 12px;">تعذر تحميل جدول الترتيب لهذا الدوري حالياً.</div>';
-    })
-    .catch(error => {
-      console.error('Error fetching standings:', error);
-      container.innerHTML = '<div style="text-align: center; padding: 25px; color: var(--text-primary); font-size: 12px;">حدث خطأ في الاتصال بشبكة الإنترنت.</div>';
+  function switchPage(tabId, titleText, pushState = true) {
+    document.querySelectorAll('.tab-content').forEach(tab => {
+      tab.classList.remove('active');
     });
-}
+    const targetTab = document.getElementById('tab-' + tabId);
+    if (targetTab) {
+      targetTab.classList.add('active');
+    }
 
-// ==========================================
-// 4. إدارة حسابات المستخدمين والحفظ الشامل
-// ==========================================
-function openAuthPage() {
-  switchPage('auth', 'حسابي الشخصي');
-  const currentUser = JSON.parse(localStorage.getItem('ipo_current_user'));
-  if (currentUser) {
-    showProfileView(currentUser);
-  }
-}
-
-function toggleAuthMode(mode) {
-  const regForm = document.getElementById('form-register');
-  const loginForm = document.getElementById('form-login');
-  const mainTitle = document.getElementById('auth-main-title');
-
-  if (mode === 'login') {
-    regForm.style.display = 'none';
-    loginForm.style.display = 'block';
-    mainTitle.innerText = 'تسجيل الدخول';
-  } else {
-    regForm.style.display = 'block';
-    loginForm.style.display = 'none';
-    mainTitle.innerText = 'إنشاء حساب جديد';
-  }
-}
-
-let temporaryRegAvatar = 'https://i.ibb.co/6y45s1x/user.png';
-function previewDeviceImage(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      temporaryRegAvatar = e.target.result;
-      const previewImg = document.getElementById('avatar-preview-img');
-      if (previewImg) previewImg.src = temporaryRegAvatar;
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-function registerUserAccount() {
-  const name = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
-  const pass = document.getElementById('reg-pass').value.trim();
-
-  let isValid = true;
-
-  if (!name) {
-    document.getElementById('reg-name-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('reg-name-error').style.display = 'none';
+    if (pushState) {
+      isNavigatingBySystem = true;
+      history.pushState({ tab: tabId }, '', '#' + tabId);
+      setTimeout(() => { isNavigatingBySystem = false; }, 50);
+    }
   }
 
-  if (!email || !email.includes('@')) {
-    document.getElementById('reg-email-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('reg-email-error').style.display = 'none';
+  // دالة زر الرجوع للخلف الخاصة بالهاتف والمتصفح
+  function goBack() {
+    window.history.back();
   }
 
-  if (!pass || pass.length < 6) {
-    document.getElementById('reg-pass-error').style.display = 'block';
-    isValid = false;
-  } else {
-    document.getElementById('reg-pass-error').style.display = 'none';
+  // الاستماع لحدث زر الرجوع في الهاتف أو المتصفح بدقة
+  window.addEventListener('popstate', function(event) {
+    if (isNavigatingBySystem) return;
+    
+    if (event.state && event.state.tab) {
+      switchPage(event.state.tab, '', false);
+    } else {
+      switchPage('home', 'IPO TV', false);
+    }
+  });
+
+  function openAuthPage(pushState = true) {
+    switchPage('auth', 'حسابي', pushState);
+    checkUserSession();
   }
 
-  if (isValid) {
-    const userData = {
+  function toggleTheme() {
+    const htmlEl = document.documentElement;
+    const currentTheme = htmlEl.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    htmlEl.setAttribute('data-theme', newTheme);
+    const textEl = document.getElementById('theme-text');
+    const iconEl = document.getElementById('theme-icon-symbol');
+    if(textEl) textEl.innerText = newTheme === 'light' ? 'الوضع الفاتح' : 'الوضع الداكن';
+    if(iconEl) iconEl.innerText = newTheme === 'light' ? '☀️' : '🌙';
+  }
+
+  function toggleAuthMode(mode) {
+    const regForm = document.getElementById('form-register');
+    const loginForm = document.getElementById('form-login');
+    const titleEl = document.getElementById('auth-main-title');
+    if (mode === 'login') {
+      regForm.style.display = 'none';
+      loginForm.style.display = 'block';
+      titleEl.innerText = 'تسجيل الدخول';
+    } else {
+      regForm.style.display = 'block';
+      loginForm.style.display = 'none';
+      titleEl.innerText = 'إنشاء حساب جديد';
+    }
+  }
+
+  let tempAvatarBase64 = "https://i.ibb.co/6y45s1x/user.png";
+  function previewDeviceImage(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        tempAvatarBase64 = e.target.result;
+        const previewImg = document.getElementById('avatar-preview-img');
+        if(previewImg) previewImg.src = tempAvatarBase64;
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function registerUserAccount() {
+    const name = document.getElementById('reg-name').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass = document.getElementById('reg-pass').value.trim();
+
+    if(!name || !email || pass.length < 6) {
+      alert('الرجاء التأكد من تعبئة الحقول بشكل صحيح (كلمة المرور 6 أحرف على الأقل)');
+      return;
+    }
+
+    let usersList = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
+    const existingUser = usersList.find(u => u.email === email);
+    if(existingUser) {
+      alert('⚠️ هذا البريد الإلكتروني مسجل مسبقاً لحساب آخر!');
+      return;
+    }
+
+    const newUserData = {
       name: name,
       email: email,
       pass: pass,
-      avatar: temporaryRegAvatar,
-      cover: '',
-      bio: ''
+      avatar: tempAvatarBase64,
+      cover: "",
+      bio: ""
     };
 
-    localStorage.setItem('ipo_current_user', JSON.stringify(userData));
-    showProfileView(userData);
-  }
-}
+    usersList.push(newUserData);
+    localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
+    localStorage.setItem('ipo_user_account', JSON.stringify(newUserData));
+    localStorage.setItem('ipo_logged_in', 'true');
 
-function verifyLogin() {
-  const userInput = document.getElementById('login-user').value.trim();
-  const passInput = document.getElementById('login-pass').value.trim();
-  const savedUserJson = localStorage.getItem('ipo_current_user');
-
-  if (!userInput) {
-    document.getElementById('login-user-error').style.display = 'block';
-    return;
-  } else {
-    document.getElementById('login-user-error').style.display = 'none';
+    alert('تم إنشاء وحفظ الحساب الجديد بنجاح!');
+    checkUserSession();
   }
 
-  if (savedUserJson) {
-    const savedUser = JSON.parse(savedUserJson);
-    if ((savedUser.email === userInput || savedUser.name === userInput) && savedUser.pass === passInput) {
-      document.getElementById('login-pass-error').style.display = 'none';
-      showProfileView(savedUser);
-      return;
+  function verifyLogin() {
+    const userInput = document.getElementById('login-user').value.trim();
+    const passInput = document.getElementById('login-pass').value.trim();
+
+    let usersList = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
+    const foundUser = usersList.find(u => (u.name === userInput || u.email === userInput) && u.pass === passInput);
+
+    if(foundUser) {
+      localStorage.setItem('ipo_user_account', JSON.stringify(foundUser));
+      localStorage.setItem('ipo_logged_in', 'true');
+      alert('تم تسجيل الدخول بنجاح!');
+      checkUserSession();
+    } else {
+      alert('خطأ في اسم المستخدم/البريد أو كلمة المرور!');
     }
   }
 
-  document.getElementById('login-pass-error').style.display = 'block';
-}
+  function checkUserSession() {
+    const isLoggedIn = localStorage.getItem('ipo_logged_in') === 'true';
+    const regForm = document.getElementById('form-register');
+    const loginForm = document.getElementById('form-login');
+    const profileContainer = document.getElementById('user-profile-container');
+    const mainTitle = document.getElementById('auth-main-title');
+    const miniAvatar = document.getElementById('header-mini-avatar');
 
-function showProfileView(userData) {
-  document.getElementById('form-register').style.display = 'none';
-  document.getElementById('form-login').style.display = 'none';
-  document.getElementById('user-profile-container').style.display = 'block';
-  document.getElementById('auth-main-title').innerText = 'حسابي الشخصي';
+    if (isLoggedIn) {
+      if(regForm) regForm.style.display = 'none';
+      if(loginForm) loginForm.style.display = 'none';
+      if(profileContainer) profileContainer.style.display = 'block';
+      if(mainTitle) mainTitle.innerText = 'الملف الشخصي';
 
-  const userImage = userData.avatar || 'https://i.ibb.co/6y45s1x/user.png';
-  updateUserAvatars(userImage);
+      const user = JSON.parse(localStorage.getItem('ipo_user_account') || '{}');
+      document.getElementById('profile-name').innerText = user.name || 'مستخدم';
+      document.getElementById('profile-email').innerText = user.email || '';
+      
+      const avatarImg = document.getElementById('profile-avatar');
+      if(avatarImg) avatarImg.src = user.avatar || "https://i.ibb.co/6y45s1x/user.png";
+      if(miniAvatar) miniAvatar.src = user.avatar || "https://i.ibb.co/6y45s1x/user.png";
 
-  if (userData.cover) {
-    const coverBg = document.getElementById('profile-cover-bg');
-    if (coverBg) coverBg.style.backgroundImage = `url('${userData.cover}')`;
-  }
-
-  const bioInput = document.getElementById('profile-bio-input');
-  if (bioInput) {
-    bioInput.value = userData.bio || '';
-  }
-
-  document.getElementById('profile-name').innerText = userData.name || 'اسم المستخدم';
-  document.getElementById('profile-email').innerText = userData.email || 'email@gmail.com';
-}
-
-function updateUserAvatars(imageSrc) {
-  const profileAvatar = document.getElementById('profile-avatar');
-  const headerMiniAvatar = document.getElementById('header-mini-avatar');
-  
-  if (profileAvatar) profileAvatar.src = imageSrc;
-  if (headerMiniAvatar) headerMiniAvatar.src = imageSrc;
-}
-
-function updateProfileAvatar(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const base64Image = e.target.result;
-      updateUserAvatars(base64Image);
-
-      let currentUser = JSON.parse(localStorage.getItem('ipo_current_user')) || {};
-      currentUser.avatar = base64Image;
-      localStorage.setItem('ipo_current_user', JSON.stringify(currentUser));
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-function updateProfileCover(event) {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const base64Cover = e.target.result;
       const coverBg = document.getElementById('profile-cover-bg');
-      if (coverBg) {
-        coverBg.style.backgroundImage = `url('${base64Cover}')`;
+      if(coverBg && user.cover) {
+        coverBg.style.backgroundImage = `url(${user.cover})`;
       }
 
-      let currentUser = JSON.parse(localStorage.getItem('ipo_current_user')) || {};
-      currentUser.cover = base64Cover;
-      localStorage.setItem('ipo_current_user', JSON.stringify(currentUser));
-    };
-    reader.readAsDataURL(file.files[0]); // Safe fallback
-  }
-}
+      const bioInput = document.getElementById('profile-bio-input');
+      const bioViewMode = document.getElementById('bio-view-mode');
+      const bioEditMode = document.getElementById('bio-edit-mode');
+      const bioDisplayText = document.getElementById('bio-display-text');
 
-function saveUserBio(bioText) {
-  let currentUser = JSON.parse(localStorage.getItem('ipo_current_user')) || {};
-  currentUser.bio = bioText;
-  localStorage.setItem('ipo_current_user', JSON.stringify(currentUser));
-}
-
-function checkActiveSession() {
-  const savedUserJson = localStorage.getItem('ipo_current_user');
-  if (savedUserJson) {
-    const savedUser = JSON.parse(savedUserJson);
-    updateUserAvatars(savedUser.avatar || 'https://i.ibb.co/6y45s1x/user.png');
-    if (savedUser.cover) {
-      const coverBg = document.getElementById('profile-cover-bg');
-      if (coverBg) coverBg.style.backgroundImage = `url('${savedUser.cover}')`;
+      if(user.bio && user.bio.trim() !== '') {
+        if(bioInput) bioInput.value = user.bio;
+        if(bioDisplayText) bioDisplayText.innerText = user.bio;
+        if(bioViewMode) bioViewMode.style.display = 'block';
+        if(bioEditMode) bioEditMode.style.display = 'none';
+      } else {
+        if(bioInput) bioInput.value = '';
+        if(bioViewMode) bioViewMode.style.display = 'none';
+        if(bioEditMode) bioEditMode.style.display = 'block';
+      }
+    } else {
+      if(profileContainer) profileContainer.style.display = 'none';
+      if(regForm) regForm.style.display = 'block';
+      if(mainTitle) mainTitle.innerText = 'إنشاء حساب جديد';
     }
   }
-}
 
-function logoutAccount() {
-  localStorage.removeItem('ipo_current_user');
-  updateUserAvatars('https://i.ibb.co/6y45s1x/user.png');
-  
-  const coverBg = document.getElementById('profile-cover-bg');
-  if (coverBg) coverBg.style.backgroundImage = '';
+  function saveUserBio() {
+    const bioText = document.getElementById('profile-bio-input').value;
+    let user = JSON.parse(localStorage.getItem('ipo_user_account') || '{}');
+    user.bio = bioText;
+    
+    localStorage.setItem('ipo_user_account', JSON.stringify(user));
 
-  const bioInput = document.getElementById('profile-bio-input');
-  if (bioInput) bioInput.value = '';
+    let usersList = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
+    usersList = usersList.map(u => u.email === user.email ? user : u);
+    localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
 
-  document.getElementById('user-profile-container').style.display = 'none';
-  toggleAuthMode('register');
-  document.getElementById('auth-main-title').innerText = 'إنشاء حساب جديد';
-}
+    const bioViewMode = document.getElementById('bio-view-mode');
+    const bioEditMode = document.getElementById('bio-edit-mode');
+    const bioDisplayText = document.getElementById('bio-display-text');
+
+    if(bioDisplayText) bioDisplayText.innerText = bioText;
+    if(bioViewMode) bioViewMode.style.display = 'block';
+    if(bioEditMode) bioEditMode.style.display = 'none';
+  }
+
+  function cancelBioEdit() {
+    let user = JSON.parse(localStorage.getItem('ipo_user_account') || '{}');
+    const bioViewMode = document.getElementById('bio-view-mode');
+    const bioEditMode = document.getElementById('bio-edit-mode');
+    const bioInput = document.getElementById('profile-bio-input');
+
+    if(user.bio && user.bio.trim() !== '') {
+      if(bioInput) bioInput.value = user.bio;
+      if(bioViewMode) bioViewMode.style.display = 'block';
+      if(bioEditMode) bioEditMode.style.display = 'none';
+    } else {
+      if(bioInput) bioInput.value = '';
+      if(bioViewMode) bioViewMode.style.display = 'none';
+      if(bioEditMode) bioEditMode.style.display = 'block';
+    }
+  }
+
+  function enableBioEdit() {
+    const bioViewMode = document.getElementById('bio-view-mode');
+    const bioEditMode = document.getElementById('bio-edit-mode');
+    if(bioViewMode) bioViewMode.style.display = 'none';
+    if(bioEditMode) bioEditMode.style.display = 'block';
+  }
+
+  function updateProfileAvatar(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        let user = JSON.parse(localStorage.getItem('ipo_user_account') || '{}');
+        user.avatar = e.target.result;
+        localStorage.setItem('ipo_user_account', JSON.stringify(user));
+        
+        let usersList = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
+        usersList = usersList.map(u => u.email === user.email ? user : u);
+        localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
+
+        checkUserSession();
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function updateProfileCover(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        let user = JSON.parse(localStorage.getItem('ipo_user_account') || '{}');
+        user.cover = e.target.result;
+        localStorage.setItem('ipo_user_account', JSON.stringify(user));
+        
+        let usersList = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
+        usersList = usersList.map(u => u.email === user.email ? user : u);
+        localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
+
+        checkUserSession();
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function logoutAccount() {
+    localStorage.setItem('ipo_logged_in', 'false');
+    alert('تم تسجيل الخروج بنجاح');
+    checkUserSession();
+    switchPage('home', 'IPO TV');
+  }
+
+  function openLeagueDetails(leagueId, leagueName, pushState = true) {
+    document.getElementById('league-details-title').innerText = 'ترتيب ' + leagueName + ' (2026-2027)';
+    const container = document.getElementById('league-standings-container');
+    container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-primary);">جاري جلب جدول الترتيب لموسم 2026-2027...</div>';
+    
+    switchPage('league-details', 'تفاصيل الدوري', pushState);
+
+    const apiUrl = `https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=${leagueId}&s=2026-2027`;
+
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            let tableData = data.table || data.standings || [];
+            
+            if (!tableData || tableData.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-primary);">⚠️ لا توجد بيانات متاحة لهذا الدوري حالياً.</div>';
+                return;
+            }
+
+            let html = `
+                <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 11px;">
+                    <thead>
+                        <tr style="border-bottom: 1px solid var(--card-border); opacity: 0.8;">
+                            <th style="padding: 6px;">#</th>
+                            <th style="padding: 6px; text-align: right;">الفريق</th>
+                            <th style="padding: 6px;">لعب</th>
+                            <th style="padding: 6px;">فاز</th>
+                            <th style="padding: 6px;">تعادل</th>
+                            <th style="padding: 6px;">خسر</th>
+                            <th style="padding: 6px;">نقاط</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            tableData.forEach((item, index) => {
+                let rank = item.intRank || (index + 1);
+                let teamName = item.strTeam || item.team_name || 'فريق';
+                let played = item.intPlayed || item.played || 0;
+                let win = item.intWin || item.won || 0;
+                let draw = item.intDraw || item.draw || 0;
+                let loss = item.intLoss || item.lost || 0;
+                let points = item.intPoints || item.points || 0;
+                let badge = item.strTeamBadge || item.logo || '';
+
+                html += `
+                    <tr style="border-bottom: 1px solid var(--card-border);">
+                        <td style="padding: 6px; font-weight: bold;">${rank}</td>
+                        <td style="padding: 6px; text-align: right; display: flex; align-items: center; gap: 6px;">
+                            ${badge ? `<img src="${badge}" style="width: 14px; height: 14px; object-fit: contain;">` : ''}
+                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;">${teamName}</span>
+                        </td>
+                        <td style="padding: 6px;">${played}</td>
+                        <td style="padding: 6px;">${win}</td>
+                        <td style="padding: 6px;">${draw}</td>
+                        <td style="padding: 6px;">${loss}</td>
+                        <td style="padding: 6px; font-weight: bold; color: var(--accent-color);">${points}</td>
+                    </tr>
+                `;
+            });
+
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        })
+        .catch(error => {
+            console.error('Error fetching standings:', error);
+            container.innerHTML = '<div style="text-align: center; padding: 20px; color: #ef4444;">⚠️ حدث خطأ أثناء الاتصال وجلب بيانات الترتيب. تأكد من اتصال الإنترنت.</div>';
+        });
+  }
+
+  window.onload = function() {
+    checkUserSession();
+    if (!window.location.hash) {
+      history.replaceState({ tab: 'home' }, '', '#home');
+    }
+  };
