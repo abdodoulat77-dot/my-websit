@@ -20,527 +20,343 @@
 <div class="app-container" id="app">
 
   <div class="phone-inner-bg-animation">
-
     <div class="tiny-circle"></div>
-
     <div class="tiny-circle"></div>
-
     <div class="tiny-circle"></div>
-
     <div class="tiny-circle"></div>
-
     <div class="tiny-circle"></div>
-
     <div class="tiny-circle"></div>
-
   </div>
 
 
 
   <header>
-
     <div class="header-brand">
-
       <!-- شعار التطبيق بحجم أكبر وبدون قص (طبيعي ومتناسق مع الشريط) -->
-
       <div class="header-logo-container">
-
         <img id="header-app-logo" src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" alt="IPO TV Logo" class="header-custom-logo">
-
       </div>
-
       <h1 id="header-title">IPO TV</h1>
-
     </div>
-
     
-
     <div style="display: flex; align-items: center; gap: 8px;">
-
       <button class="theme-toggle-pill" onclick="toggleTheme()">
-
         <span class="theme-icon" id="theme-icon-symbol">🌙</span> <span id="theme-text">الوضع الداكن</span>
-
       </button>
-
       
-
       <!-- صورة البروفيل المصغرة -->
-
       <div onclick="openAuthPage()" class="header-profile-wrapper" title="حسابي / الملف الشخصي">
-
         <div class="header-profile-glow"></div>
-
-        <img id="header-mini-avatar" src="https://i.ibb.co/6y45s1x/user.png" alt="Profile">
-
+        <img id="header-mini-avatar" src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" alt="Profile">
       </div>
-
     </div>
-
   </header>
 
 
 
   <main>
-
     <!-- الصفحة الرئيسية -->
-
     <div id="tab-home" class="tab-content active">
-
       <h2>اختر القسم المناسب</h2>
-
       
-
       <div class="menu-card" onclick="switchPage('live', 'مباريات اليوم', true)">
-
         <div class="menu-logo-container">
-
           <img src="https://i.ibb.co/QFcpBFJm/unnamed.png" alt="مباريات اليوم" class="menu-logo">
-
         </div>
-
         <div class="menu-info">
-
           <div class="menu-title">مباريات اليوم</div>
-
           <div class="menu-desc">تابع أحدث البثوث الحية وأقوى مواجهات موسم 2026-2027</div>
-
         </div>
-
       </div>
-
-
 
       <div class="menu-card" onclick="switchPage('leagues', 'جدول الدوريات', true)">
-
         <div class="menu-logo-container">
-
           <img src="https://i.ibb.co/3mzLZ79m/pngtree-football-championship-gold-emblem-png-image-14121607.png" alt="جدول الدوريات" class="menu-logo">
-
         </div>
-
         <div class="menu-info">
-
           <div class="menu-title">جدول الدوريات (2026-2027)</div>
-
           <div class="menu-desc">استعرض ترتيب وجداول البطولات الكبرى لموسم 2026-2027</div>
-
         </div>
-
       </div>
 
-
+      <div class="menu-card" onclick="switchPage('ai-chat', 'مساعد الذكاء الاصطناعي', true)">
+        <div class="menu-logo-container">
+          <img src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" alt="مساعد الذكاء الاصطناعي" class="menu-logo">
+        </div>
+        <div class="menu-info">
+          <div class="menu-title">مساعد الذكاء الاصطناعي</div>
+          <div class="menu-desc">اسأل وتعرف على كل ما تحتاجه حول مباريات وإحصائيات كرة القدم</div>
+        </div>
+      </div>
 
       <div class="menu-card" onclick="openAuthPage(true)">
-
         <div class="menu-logo-container">
-
-          <img src="https://i.ibb.co/6y45s1x/user.png" alt="حسابي" class="menu-logo">
-
+          <img src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" alt="حسابي" class="menu-logo">
         </div>
-
         <div class="menu-info">
-
           <div class="menu-title" id="home-auth-title">حسابي / تسجيل الدخول</div>
-
           <div class="menu-desc" id="home-auth-desc">سجل حساباً جديداً أو الدخول لحسابك المسجل</div>
-
         </div>
-
       </div>
-
     </div>
-
-
 
     <!-- صفحة مباريات اليوم -->
-
     <div id="tab-live" class="tab-content">
-
       <div class="back-nav">
-
         <button class="back-btn" onclick="goBack()">
-
           <span class="back-icon-shape"></span> رجوع للخلف
-
         </button>
-
       </div>
-
       <h2>مباريات اليوم (2026-2027)</h2>
-
       <div class="card" style="text-align: center; padding: 30px 15px;">
-
         <div class="no-matches-message" style="color: var(--text-primary); font-weight: 700; font-size: 13px; margin-bottom: 6px;">لا توجد مواجهات اليوم</div>
-
         <div style="color: var(--text-secondary); font-size: 11px; margin-top: 6px; margin-bottom: 0;">المستطيل الأخضر يستعد لإشعال حماس موسم 2026-2027 قريباً!</div>
-
       </div>
-
     </div>
-
-
 
     <!-- صفحة جدول الدوريات -->
-
     <div id="tab-leagues" class="tab-content">
-
       <div class="back-nav">
-
         <button class="back-btn" onclick="goBack()">
-
           <span class="back-icon-shape"></span> رجوع للخلف
-
         </button>
-
       </div>
-
       <h2>الدوريات الخمس الكبرى (2026-2027)</h2>
-
       
-
       <div class="modern-leagues-grid">
-
         <div class="league-option-card" onclick="openLeagueDetails('4328', 'الدوري الإنجليزي', true)">
-
           <div class="league-info-flex">
-
             <img src="https://i.ibb.co/99xq7xQY/download-removebg-preview.png" alt="الدوري الإنجليزي" class="league-logo-img">
-
             <span class="league-name-text">الدوري الإنجليزي</span>
-
           </div>
-
           <span class="league-arrow-icon">◀</span>
-
         </div>
-
-
 
         <div class="league-option-card" onclick="openLeagueDetails('4335', 'الدوري الإسباني', true)">
-
           <div class="league-info-flex">
-
             <img src="https://i.ibb.co/DHPs9pcK/download-removebg-preview-1.png" alt="الدوري الإسباني" class="league-logo-img">
-
             <span class="league-name-text">الدوري الإسباني</span>
-
           </div>
-
           <span class="league-arrow-icon">◀</span>
-
         </div>
-
-
 
         <div class="league-option-card" onclick="openLeagueDetails('4332', 'الدوري الإيطالي', true)">
-
           <div class="league-info-flex">
-
             <img src="https://i.ibb.co/d4WMJFCt/images-removebg-preview.png" alt="الدوري الإيطالي" class="league-logo-img">
-
             <span class="league-name-text">الدوري الإيطالي</span>
-
           </div>
-
           <span class="league-arrow-icon">◀</span>
-
         </div>
-
-
 
         <div class="league-option-card" onclick="openLeagueDetails('4331', 'الدوري الألماني', true)">
-
           <div class="league-info-flex">
-
             <img src="https://i.ibb.co/xKZ7QxyT/download-removebg-preview-2.png" alt="الدوري الألماني" class="league-logo-img">
-
             <span class="league-name-text">الدوري الألماني</span>
-
           </div>
-
           <span class="league-arrow-icon">◀</span>
-
         </div>
-
-
 
         <div class="league-option-card" onclick="openLeagueDetails('4334', 'الدوري الفرنسي', true)">
-
           <div class="league-info-flex">
-
             <img src="https://i.ibb.co/JW1gT7pd/images-removebg-preview-1.png" alt="الدوري الفرنسي" class="league-logo-img">
-
             <span class="league-name-text">الدوري الفرنسي</span>
-
           </div>
-
           <span class="league-arrow-icon">◀</span>
-
         </div>
-
       </div>
-
     </div>
-
-
 
     <!-- صفحة تفاصيل الدوري وترتيبه -->
-
     <div id="tab-league-details" class="tab-content">
-
       <div class="back-nav">
-
         <button class="back-btn" onclick="goBack()">
-
           <span class="back-icon-shape"></span> رجوع للخلف
-
         </button>
-
       </div>
-
       <h2 id="league-details-title">ترتيب الدوري</h2>
-
       <div class="card" id="league-standings-container" style="padding: 8px; font-size: 10px; max-height: 420px; overflow-y: auto;">
-
         <div style="text-align: center; padding: 20px; color: var(--text-primary);">جاري جلب جدول الترتيب لموسم 2026-2027...</div>
-
       </div>
-
     </div>
 
-
+    <!-- صفحة محادثة الذكاء الاصطناعي المطور -->
+    <div id="tab-ai-chat" class="tab-content">
+      <div class="back-nav">
+        <button class="back-btn" onclick="goBack()">
+          <span class="back-icon-shape"></span> رجوع للخلف
+        </button>
+      </div>
+      <h2>مساعد الذكاء الاصطناعي الكروي</h2>
+      <div class="card" style="display: flex; flex-direction: column; height: 380px; padding: 10px;">
+        <div id="ai-chat-messages" style="flex-grow: 1; overflow-y: auto; padding: 8px; display: flex; flex-direction: column; gap: 10px; font-size: 12px;">
+          <div style="display: flex; align-items: flex-start; gap: 8px; align-self: flex-start; max-width: 85%;">
+            <img src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" alt="AI Avatar" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1.5px solid var(--accent-color, #3b82f6);">
+            <div style="background: var(--input-bg); padding: 8px 12px; border-radius: 10px; color: var(--text-primary);">
+              أهلاً بك! أنا خبير كرة القدم الذكي في تطبيق IPO TV. اسألني عن أي لاعب، مباراة، نادي، تحليل تكتيكي، أو إحصائية وسأقدم لك إجابة دقيقة وفورية.
+            </div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 6px; margin-top: 8px;">
+          <input type="text" id="ai-chat-input" placeholder="اسأل الخبير الكروي عن أي شيء..." style="flex-grow: 1; padding: 8px 12px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 8px; color: var(--input-text); font-size: 12px; outline: none;">
+          <button onclick="sendAIChatMessage()" style="background: var(--accent-color, #3b82f6); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-size: 12px; cursor: pointer; font-weight: bold;">إرسال</button>
+        </div>
+      </div>
+    </div>
 
     <!-- صفحة المصادقة والملف الشخصي -->
-
     <div id="tab-auth" class="tab-content">
-
       <div class="back-nav">
-
         <button class="back-btn" onclick="goBack()">
-
           <span class="back-icon-shape"></span> رجوع للخلف
-
         </button>
-
       </div>
-
       
-
       <h2 id="auth-main-title">إنشاء حساب جديد</h2>
 
-
-
       <!-- نموذج التسجيل -->
-
       <div id="form-register" class="card">
-
         <div class="form-group">
-
           <label>صورة الحساب الشخصية</label>
-
           <div class="avatar-upload-container">
-
-            <img id="avatar-preview-img" src="https://i.ibb.co/6y45s1x/user.png" class="avatar-preview" alt="Preview">
-
+            <img id="avatar-preview-img" src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" class="avatar-preview" alt="Preview">
             <label for="device-image-input" class="upload-btn-label">اختر صورة من الجهاز</label>
-
             <input type="file" id="device-image-input" accept="image/*" style="display: none;" onchange="previewDeviceImage(event)">
-
           </div>
-
         </div>
-
         <div class="form-group">
-
           <label>اسم المستخدم</label>
-
           <input type="text" id="reg-name" placeholder="أدخل اسمك هنا">
-
         </div>
-
         <div class="form-group">
-
           <label>البريد الإلكتروني</label>
-
           <input type="text" id="reg-email" placeholder="example@gmail.com">
-
         </div>
-
         <div class="form-group">
-
           <label>كلمة المرور</label>
-
           <input type="password" id="reg-pass" placeholder="••••••••">
-
         </div>
-
         <button class="action-btn" onclick="registerUserAccount()">إنشاء وتسجيل الحساب</button>
-
         <div class="auth-switch-text">لديك حساب بالفعل؟ <span onclick="toggleAuthMode('login')">سجل دخولك من هنا</span></div>
-
       </div>
-
-
 
       <!-- نموذج تسجيل الدخول -->
-
       <div id="form-login" class="card" style="display: none;">
-
         <div class="form-group">
-
           <label>البريد الإلكتروني أو اسم المستخدم</label>
-
           <input type="text" id="login-user" placeholder="example@gmail.com أو الاسم">
-
         </div>
-
         <div class="form-group">
-
           <label>كلمة المرور</label>
-
           <input type="password" id="login-pass" placeholder="••••••••">
-
         </div>
-
         <button class="action-btn" onclick="verifyLogin()">تسجيل الدخول</button>
-
         <div class="auth-switch-text">ليس لديك حساب؟ <span onclick="toggleAuthMode('register')">أنشئ حساباً جديداً</span></div>
-
       </div>
 
-
-
-      <!-- عرض الملف الشخصي مع البايو -->
-
+      <!-- عرض الملف الشخصي مع البايو وفريق المفضلة -->
       <div id="user-profile-container" style="display: none;">
-
         <div class="card" style="padding: 0; overflow: hidden; position: relative;">
-
           
-
           <!-- الغلاف الخلفي -->
-
           <div id="profile-cover-bg" style="width: 100%; height: 110px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); background-size: cover; background-position: center; position: relative;">
-
             <label for="cover-image-input" style="position: absolute; bottom: 8px; left: 8px; background: rgba(0,0,0,0.6); color: #fff; padding: 4px 10px; font-size: 10px; border-radius: 6px; cursor: pointer; backdrop-filter: blur(4px);">📷 تغيير الغلاف</label>
-
             <input type="file" id="cover-image-input" accept="image/*" style="display: none;" onchange="updateProfileCover(event)">
-
           </div>
-
-
 
           <!-- تفاصيل البروفيل -->
-
           <div style="padding: 0 15px 15px 15px; text-align: center; position: relative;">
-
             <div style="position: relative; width: 75px; height: 75px; margin: -38px auto 6px auto;" onclick="document.getElementById('profile-new-image-input').click()" title="انقر لتغيير الصورة">
-
               <img id="profile-avatar" src="" class="profile-avatar-img" alt="Avatar" style="width: 75px; height: 75px; border-radius: 50%; object-fit: cover; border: 3px solid var(--card-bg, #1e293b); box-shadow: 0 4px 10px rgba(0,0,0,0.3); background: #fff; cursor: pointer;">
-
               <span style="position: absolute; bottom: 0; right: 0; background: #3b82f6; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; border: 2px solid var(--card-bg, #1e293b);">➕</span>
-
             </div>
-
             <input type="file" id="profile-new-image-input" accept="image/*" style="display: none;" onchange="updateProfileAvatar(event)">
-
             
-
             <h3 id="profile-name" style="margin: 0; font-size: 15px; font-weight: bold; color: var(--text-primary);">اسم المستخدم</h3>
-
             <p id="profile-email" style="margin: 2px 0 8px 0; font-size: 11px; opacity: 0.7; color: var(--text-primary);">email@gmail.com</p>
 
-
+            <!-- حقل اختيار الفريق المفضل الجديد (عصري، متحرك وعريض) -->
+            <div class="form-group" style="margin-top: 15px; text-align: right;">
+              <label style="font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px; margin-bottom: 6px; color: var(--text-primary);">
+                <span>⚽</span> الفريق المفضل:
+              </label>
+              <div id="selected-team-display" class="modern-team-box" onclick="openTeamSelectorModal()">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div class="team-logo-glow-wrapper">
+                    <img id="fav-team-logo-preview" src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" style="width: 26px; height: 26px; object-fit: contain;">
+                  </div>
+                  <span id="fav-team-name-text" style="font-size: 13px; font-weight: 700; color: var(--text-primary);">اختر فريقك المفضّل</span>
+                </div>
+                <span class="team-change-badge">تغيير ◀</span>
+              </div>
+            </div>
 
             <!-- حقل البايو ونظام التعديل والحفظ -->
-
-            <div style="margin-bottom: 12px; text-align: right;">
-
+            <div style="margin-bottom: 12px; text-align: right; margin-top: 12px;">
               
-
               <!-- وضع العرض -->
-
               <div id="bio-view-mode" style="display: none; text-align: center; padding: 4px 0;">
-
                 <p id="bio-display-text" style="font-size: 12px; color: var(--text-primary); margin: 0 0 10px 0; word-break: break-word; line-height: 1.4;"></p>
-
                 <button onclick="enableBioEdit()" class="fb-profile-action-btn">
-
                   <span style="font-size: 14px;">✏️</span> تعديل البايو
-
                 </button>
-
               </div>
-
-
 
               <!-- وضع التعديل -->
-
               <div id="bio-edit-mode" style="position: relative;">
-
                 <label style="font-size: 11px; font-weight: 700; opacity: 0.9; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; color: var(--text-primary);">
-
                   <span>✍️</span> تعديل النبذة التعريفية (البايو):
-
                 </label>
-
                 <textarea id="profile-bio-input" rows="2" placeholder="اكتب نبذة تعريفية مميزة عنك..." style="width: 100%; padding: 10px; font-size: 12px; border-radius: 10px; border: 1.5px solid var(--accent-color, #3b82f6); background: var(--input-bg, rgba(255,255,255,0.05)); color: var(--text-primary); resize: none; outline: none; box-sizing: border-box; margin-bottom: 8px; box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15);"></textarea>
-
                 <div style="display: flex; gap: 8px;">
-
                   <button onclick="saveUserBio()" class="fb-save-btn">
-
                     <span>💾</span> حفظ التغييرات
-
                   </button>
-
                   <button onclick="cancelBioEdit()" class="fb-cancel-btn">
-
                     <span>✕</span> إلغاء
-
                   </button>
-
                 </div>
-
               </div>
-
-
 
             </div>
 
-
-
             <label for="cover-image-input" style="display: block; width: 100%; padding: 8px; background: var(--accent-color, #3b82f6); color: #fff; font-size: 12px; border-radius: 6px; cursor: pointer; text-align: center; box-sizing: border-box; font-weight: bold; margin-top: 8px;">
-
               🖼️ تغيير غلاف الحساب
-
             </label>
-
           </div>
-
         </div>
 
-
-
         <button class="action-btn" style="background: linear-gradient(135deg, #ef4444, #dc2626); margin-top: 10px;" onclick="logoutAccount()">تسجيل الخروج</button>
-
       </div>
-
     </div>
 
+    <!-- نافذة اختيار الفريق المفضل (Modal) -->
+    <div id="team-selector-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 100; backdrop-filter: blur(4px); align-items: center; justify-content: center; padding: 16px;">
+      <div style="background: var(--card-bg); width: 100%; max-width: 400px; height: 80vh; border-radius: 16px; display: flex; flex-direction: column; border: 1px solid var(--card-border); overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+        
+        <!-- رأس النافذة -->
+        <div style="padding: 14px 16px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;">
+          <h3 style="font-size: 14px; font-weight: 700; color: var(--text-primary); margin: 0;">اختر فريقك المفضل</h3>
+          <button onclick="closeTeamSelectorModal()" style="background: none; border: none; font-size: 16px; color: var(--text-primary); cursor: pointer;">✕</button>
+        </div>
 
+        <!-- شريط البحث -->
+        <div style="padding: 12px 16px; border-bottom: 1px solid var(--card-border);">
+          <input type="text" id="team-search-input" onkeyup="filterTeamsList()" placeholder="ابحث عن اسم الفريق..." style="width: 100%; padding: 10px 14px; background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 10px; color: var(--input-text); font-size: 12px; outline: none;">
+        </div>
+
+        <!-- قائمة الفرق -->
+        <div id="teams-list-container" style="flex-grow: 1; overflow-y: auto; padding: 8px 16px; display: flex; flex-direction: column; gap: 6px;">
+          <!-- يتم تعبئتها ديناميكياً عبر الجافاسكريبت -->
+        </div>
+
+      </div>
+    </div>
 
     <div class="app-footer-note">ملاحظة: الموقع يعمل بالإنترنت فقط</div>
-
   </main>
-
 </div>
 
-
-
 <script src="./script.js"></script>
-
 </body>
 
 </html>

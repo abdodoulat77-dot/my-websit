@@ -121,7 +121,6 @@ header {
   gap: 10px;
 }
 
-/* تكبير وتعديل حاوية الشعار ليظهر بحجم مناسب ومتناسق تماماً بدون قص دائري أو مربع */
 .header-logo-container {
   height: 40px;
   display: flex;
@@ -232,16 +231,22 @@ main {
 
 .tab-content {
   display: none;
-  animation: fadeIn 0.25s ease;
+  animation: dynamicPageEntry 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .tab-content.active {
   display: block;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes dynamicPageEntry {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 h2 {
@@ -263,6 +268,22 @@ h2 {
   cursor: pointer;
   box-shadow: 0 4px 12px var(--shadow-color);
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  animation: menuCardSlideIn 0.5s ease backwards;
+}
+
+.menu-card:nth-child(2) { animation-delay: 0.1s; }
+.menu-card:nth-child(3) { animation-delay: 0.2s; }
+.menu-card:nth-child(4) { animation-delay: 0.3s; }
+
+@keyframes menuCardSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .menu-card:hover {
@@ -421,6 +442,80 @@ h2 {
   border-color: var(--accent-color);
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
 }
+
+/* ==================================================== */
+/* تصميم خانة الفريق المفضل العصرية، العريضة، والمتحركة */
+/* ==================================================== */
+.modern-team-box {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: linear-gradient(135deg, var(--input-bg), var(--card-bg));
+  border: 2px solid var(--card-border);
+  border-radius: 14px;
+  cursor: pointer;
+  box-shadow: 0 6px 20px var(--shadow-color);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modern-team-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: 0.6s;
+}
+
+.modern-team-box:hover::before {
+  right: 100%;
+}
+
+.modern-team-box:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+}
+
+.team-logo-glow-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--input-bg);
+  box-shadow: 0 0 10px rgba(59, 130, 246, 0.2);
+  animation: pulseGlow 2.5s infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
+  100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.7); }
+}
+
+.team-change-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-color);
+  background: rgba(59, 130, 246, 0.12);
+  padding: 6px 12px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.modern-team-box:hover .team-change-badge {
+  background: var(--accent-color);
+  color: #fff;
+}
+/* ==================================================== */
 
 .avatar-upload-container {
   display: flex;
