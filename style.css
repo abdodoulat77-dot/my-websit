@@ -1788,3 +1788,90 @@ main {
     gap: 9px;
   }
 }
+
+/* =========================================================
+   شاشة الدخول الحديثة + الملفات العامة + توثيق المالك
+   ========================================================= */
+.app-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59,130,246,.22), transparent 30%),
+    radial-gradient(circle at 80% 80%, rgba(37,99,235,.18), transparent 32%),
+    linear-gradient(145deg, #020617 0%, #0f172a 48%, #111827 100%);
+  transition: opacity .55s ease, visibility .55s ease;
+}
+.app-splash.is-hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+.splash-card {
+  position: relative;
+  width: min(360px, calc(100% - 40px));
+  padding: 34px 26px 28px;
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 28px;
+  background: rgba(15,23,42,.72);
+  backdrop-filter: blur(24px);
+  box-shadow: 0 30px 90px rgba(0,0,0,.45), 0 0 45px rgba(59,130,246,.10), inset 0 1px 0 rgba(255,255,255,.08);
+  text-align: center;
+  animation: splashCardIn .8s cubic-bezier(.2,.8,.2,1) both;
+}
+.splash-logo-wrap {
+  width: 94px;
+  height: 94px;
+  margin: 0 auto 18px;
+  border-radius: 28px;
+  padding: 5px;
+  background: linear-gradient(145deg, rgba(96,165,250,.9), rgba(37,99,235,.25));
+  box-shadow: 0 0 0 1px rgba(255,255,255,.12), 0 0 40px rgba(59,130,246,.28);
+  animation: splashFloat 2.6s ease-in-out infinite;
+}
+.splash-logo { width:100%; height:100%; object-fit:cover; border-radius:23px; display:block; }
+.splash-title { color:#fff; font-size:31px; font-weight:900; letter-spacing:.8px; }
+.splash-subtitle { margin-top:7px; color:rgba(255,255,255,.68); font-size:11px; }
+.splash-progress { width:100%; height:6px; margin-top:24px; overflow:hidden; border-radius:999px; background:rgba(255,255,255,.08); }
+.splash-progress span { display:block; width:35%; height:100%; border-radius:inherit; background:linear-gradient(90deg,#60a5fa,#2563eb,#93c5fd); box-shadow:0 0 14px rgba(96,165,250,.55); animation:splashProgress 1.4s ease-in-out infinite; }
+.splash-status { margin-top:10px; color:rgba(255,255,255,.46); font-size:10px; }
+.splash-orbit { position:absolute; border:1px solid rgba(96,165,250,.13); border-radius:50%; pointer-events:none; }
+.splash-orbit-1 { width:520px; height:520px; animation:splashOrbit 12s linear infinite; }
+.splash-orbit-2 { width:760px; height:760px; animation:splashOrbit 17s linear infinite reverse; }
+@keyframes splashCardIn { from { opacity:0; transform:translateY(20px) scale(.96); } to { opacity:1; transform:none; } }
+@keyframes splashFloat { 0%,100% { transform:translateY(0) rotate(0deg); } 50% { transform:translateY(-7px) rotate(1deg); } }
+@keyframes splashProgress { 0% { transform:translateX(-120%); } 100% { transform:translateX(360%); } }
+@keyframes splashOrbit { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+
+.profile-public-status { display:inline-flex; align-items:center; gap:5px; margin-top:6px; width:max-content; padding:4px 9px; border-radius:999px; background:rgba(59,130,246,.10); border:1px solid rgba(59,130,246,.20); color:var(--accent-color); font-size:9px; font-weight:800; }
+.profile-verified-badge { display:inline-flex; align-items:center; gap:5px; margin-inline-start:7px; vertical-align:middle; padding:4px 8px; border-radius:999px; background:linear-gradient(135deg,#0284c7,#2563eb); color:#fff; font-size:9px; font-weight:900; box-shadow:0 5px 16px rgba(37,99,235,.25); }
+
+/* إطار المالك الموثق: يظهر للعامة أيضًا */
+.owner-frame-overlay {
+  position:absolute;
+  inset:-14px;
+  border-radius:50%;
+  pointer-events:none;
+  background:url('https://i.ibb.co/YBf77qbD/pngtree-online-game-metal-frame-png-image-11321051.png') center/contain no-repeat;
+  filter:drop-shadow(0 0 10px rgba(148,163,184,.35));
+  z-index:6;
+  animation:ownerFrameGlow 3s ease-in-out infinite alternate;
+}
+@keyframes ownerFrameGlow { from { transform:scale(1); filter:drop-shadow(0 0 7px rgba(148,163,184,.25)); } to { transform:scale(1.02); filter:drop-shadow(0 0 16px rgba(96,165,250,.42)); } }
+
+
+
+[data-theme="light"] .app-splash { background:linear-gradient(145deg,#eff6ff 0%,#dbeafe 48%,#f8fafc 100%); }
+[data-theme="light"] .splash-card { background:rgba(255,255,255,.68); border-color:rgba(37,99,235,.12); }
+[data-theme="light"] .splash-title { color:#0f172a; }
+[data-theme="light"] .splash-subtitle,.splash-status { color:#475569; }
+
+@media (max-width:600px) {
+                .owner-frame-overlay { inset:-11px; }
+}
+.header-owner-frame { display:none; position:absolute; inset:-8px; z-index:4; border-radius:50%; pointer-events:none; background:url('https://i.ibb.co/YBf77qbD/pngtree-online-game-metal-frame-png-image-11321051.png') center/contain no-repeat; filter:drop-shadow(0 0 7px rgba(148,163,184,.35)); animation:ownerFrameGlow 3s ease-in-out infinite alternate; }
+
+
+/* التوثيق والإطار العام لصاحب التطبيق فقط */
+#public-profile-owner-frame { display:none; }
+#public-profile-verified { display:none; }
+#public-profile-owner-frame { z-index:8; }
