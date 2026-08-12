@@ -1851,7 +1851,7 @@ main {
   inset:-14px;
   border-radius:50%;
   pointer-events:none;
-  background:url('https://i.ibb.co/YBf77qbD/pngtree-online-game-metal-frame-png-image-11321051.png') center/contain no-repeat;
+  background:url('https://i.ibb.co/1fv1dcCv/download-removebg-preview.png') center/contain no-repeat;
   filter:drop-shadow(0 0 10px rgba(148,163,184,.35));
   z-index:6;
   animation:ownerFrameGlow 3s ease-in-out infinite alternate;
@@ -1868,10 +1868,34 @@ main {
 @media (max-width:600px) {
                 .owner-frame-overlay { inset:-11px; }
 }
-.header-owner-frame { display:none; position:absolute; inset:-8px; z-index:4; border-radius:50%; pointer-events:none; background:url('https://i.ibb.co/YBf77qbD/pngtree-online-game-metal-frame-png-image-11321051.png') center/contain no-repeat; filter:drop-shadow(0 0 7px rgba(148,163,184,.35)); animation:ownerFrameGlow 3s ease-in-out infinite alternate; }
+.header-owner-frame { display:none; position:absolute; inset:-8px; z-index:4; border-radius:50%; pointer-events:none; background:url('https://i.ibb.co/1fv1dcCv/download-removebg-preview.png') center/contain no-repeat; filter:drop-shadow(0 0 7px rgba(148,163,184,.35)); animation:ownerFrameGlow 3s ease-in-out infinite alternate; }
 
 
 /* التوثيق والإطار العام لصاحب التطبيق فقط */
 #public-profile-owner-frame { display:none; }
 #public-profile-verified { display:none; }
 #public-profile-owner-frame { z-index:8; }
+
+
+/* إطار صاحب التطبيق الجديد — متناسق مع صورة البروفايل */
+.owner-frame-overlay {
+  inset: -8px;
+  border-radius: 50%;
+  background: url("https://i.ibb.co/1fv1dcCv/download-removebg-preview.png") center center / 100% 100% no-repeat;
+  filter: drop-shadow(0 4px 10px rgba(0,0,0,.28));
+  transform-origin: center;
+  z-index: 8;
+}
+.profile-avatar-wrap .owner-frame-overlay { inset: -7px; }
+.public-profile-avatar-wrap .owner-frame-overlay { inset: -7px; }
+.header-owner-frame {
+  inset: -5px;
+  background: url("https://i.ibb.co/1fv1dcCv/download-removebg-preview.png") center center / 100% 100% no-repeat;
+  filter: drop-shadow(0 2px 7px rgba(0,0,0,.28));
+  z-index: 8;
+}
+@media (max-width:600px) {
+  .profile-avatar-wrap .owner-frame-overlay { inset: -6px; }
+  .public-profile-avatar-wrap .owner-frame-overlay { inset: -6px; }
+  .header-owner-frame { inset: -4px; }
+}
