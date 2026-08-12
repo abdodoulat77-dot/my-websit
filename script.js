@@ -5,23 +5,137 @@ let isNavigatingBySystem = false;
 
 // قائمة الأندية العالمية حصرياً مع خيار "محايد"
 const globalTeamsList = [
-  { name: "محايد (بدون فريق)", logo: "https://i.ibb.co/6y45s1x/user.png" },
-  { name: "ريال مدريد", logo: "https://crests.football-data.org/86.png" },
-  { name: "برشلونة", logo: "https://crests.football-data.org/81.png" },
-  { name: "أتلتيكو مدريد", logo: "https://crests.football-data.org/78.png" },
-  { name: "مانشستر سيتي", logo: "https://crests.football-data.org/65.png" },
-  { name: "مانشستر يونايتد", logo: "https://crests.football-data.org/66.png" },
-  { name: "ليفربول", logo: "https://crests.football-data.org/64.png" },
-  { name: "أرسنال", logo: "https://crests.football-data.org/57.png" },
-  { name: "تشيلسي", logo: "https://crests.football-data.org/61.png" },
-  { name: "توتنهام هوتسبير", logo: "https://crests.football-data.org/73.png" },
-  { name: "بايرن ميونخ", logo: "https://crests.football-data.org/5.png" },
-  { name: "بوروسيا دورتموند", logo: "https://crests.football-data.org/4.png" },
-  { name: "يوفنتوس", logo: "https://crests.football-data.org/109.png" },
-  { name: "إي سي ميلان", logo: "https://crests.football-data.org/98.png" },
-  { name: "إنتر ميلان", logo: "https://crests.football-data.org/108.png" },
-  { name: "باريس سان جيرمان", logo: "https://crests.football-data.org/524.png" },
-  { name: "ريال بيتيس", logo: "https://crests.football-data.org/90.png" }
+  { name: 'محايد (بدون فريق)', league: 'عام' },
+  { name: 'أرسنال', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'أستون فيلا', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'بورنموث', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'برينتفورد', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'برايتون', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'تشيلسي', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'كريستال بالاس', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'إيفرتون', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'فولهام', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'ليدز يونايتد', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'ليفربول', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'مانشستر سيتي', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'مانشستر يونايتد', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'نيوكاسل يونايتد', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'نوتنغهام فورست', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'سندرلاند', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'توتنهام هوتسبير', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'كوفنتري سيتي', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'إيبسويتش تاون', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'هال سيتي', league: 'الدوري الإنجليزي الممتاز' },
+  { name: 'أتالانتا', league: 'الدوري الإيطالي' },
+  { name: 'بولونيا', league: 'الدوري الإيطالي' },
+  { name: 'كالياري', league: 'الدوري الإيطالي' },
+  { name: 'كومو', league: 'الدوري الإيطالي' },
+  { name: 'فيورنتينا', league: 'الدوري الإيطالي' },
+  { name: 'فروزينوني', league: 'الدوري الإيطالي' },
+  { name: 'جنوى', league: 'الدوري الإيطالي' },
+  { name: 'إنتر ميلان', league: 'الدوري الإيطالي' },
+  { name: 'يوفنتوس', league: 'الدوري الإيطالي' },
+  { name: 'لاتسيو', league: 'الدوري الإيطالي' },
+  { name: 'ليتشي', league: 'الدوري الإيطالي' },
+  { name: 'ميلان', league: 'الدوري الإيطالي' },
+  { name: 'مونزا', league: 'الدوري الإيطالي' },
+  { name: 'نابولي', league: 'الدوري الإيطالي' },
+  { name: 'بارما', league: 'الدوري الإيطالي' },
+  { name: 'روما', league: 'الدوري الإيطالي' },
+  { name: 'ساسولو', league: 'الدوري الإيطالي' },
+  { name: 'تورينو', league: 'الدوري الإيطالي' },
+  { name: 'أودينيزي', league: 'الدوري الإيطالي' },
+  { name: 'فينيتسيا', league: 'الدوري الإيطالي' },
+  { name: 'أنجيه', league: 'الدوري الفرنسي' },
+  { name: 'أوكسير', league: 'الدوري الفرنسي' },
+  { name: 'ستاد بريست', league: 'الدوري الفرنسي' },
+  { name: 'لوهافر', league: 'الدوري الفرنسي' },
+  { name: 'لو مان', league: 'الدوري الفرنسي' },
+  { name: 'لانس', league: 'الدوري الفرنسي' },
+  { name: 'ليل', league: 'الدوري الفرنسي' },
+  { name: 'لوريان', league: 'الدوري الفرنسي' },
+  { name: 'أولمبيك ليون', league: 'الدوري الفرنسي' },
+  { name: 'أولمبيك مارسيليا', league: 'الدوري الفرنسي' },
+  { name: 'موناكو', league: 'الدوري الفرنسي' },
+  { name: 'نيس', league: 'الدوري الفرنسي' },
+  { name: 'باريس إف سي', league: 'الدوري الفرنسي' },
+  { name: 'باريس سان جيرمان', league: 'الدوري الفرنسي' },
+  { name: 'ستاد رين', league: 'الدوري الفرنسي' },
+  { name: 'ستراسبورغ', league: 'الدوري الفرنسي' },
+  { name: 'تولوز', league: 'الدوري الفرنسي' },
+  { name: 'تروا', league: 'الدوري الفرنسي' },
+  { name: 'بايرن ميونخ', league: 'الدوري الألماني' },
+  { name: 'بوروسيا دورتموند', league: 'الدوري الألماني' },
+  { name: 'لايبزيغ', league: 'الدوري الألماني' },
+  { name: 'شتوتغارت', league: 'الدوري الألماني' },
+  { name: 'هوفنهايم', league: 'الدوري الألماني' },
+  { name: 'باير ليفركوزن', league: 'الدوري الألماني' },
+  { name: 'فرايبورغ', league: 'الدوري الألماني' },
+  { name: 'آينتراخت فرانكفورت', league: 'الدوري الألماني' },
+  { name: 'أوغسبورغ', league: 'الدوري الألماني' },
+  { name: 'ماينتس', league: 'الدوري الألماني' },
+  { name: 'يونيون برلين', league: 'الدوري الألماني' },
+  { name: 'بوروسيا مونشنغلادباخ', league: 'الدوري الألماني' },
+  { name: 'هامبورغ', league: 'الدوري الألماني' },
+  { name: 'كولن', league: 'الدوري الألماني' },
+  { name: 'فيردر بريمن', league: 'الدوري الألماني' },
+  { name: 'شالكه 04', league: 'الدوري الألماني' },
+  { name: 'إلفرسبرغ', league: 'الدوري الألماني' },
+  { name: 'بادربورن', league: 'الدوري الألماني' },
+  { name: 'أتلتيك بيلباو', league: 'الدوري الإسباني' },
+  { name: 'أتلتيكو مدريد', league: 'الدوري الإسباني' },
+  { name: 'أوساسونا', league: 'الدوري الإسباني' },
+  { name: 'سيلتا فيغو', league: 'الدوري الإسباني' },
+  { name: 'ديبورتيفو ألافيس', league: 'الدوري الإسباني' },
+  { name: 'إلتشي', league: 'الدوري الإسباني' },
+  { name: 'برشلونة', league: 'الدوري الإسباني' },
+  { name: 'خيتافي', league: 'الدوري الإسباني' },
+  { name: 'ليفانتي', league: 'الدوري الإسباني' },
+  { name: 'مالقة', league: 'الدوري الإسباني' },
+  { name: 'راسينغ سانتاندير', league: 'الدوري الإسباني' },
+  { name: 'رايو فاييكانو', league: 'الدوري الإسباني' },
+  { name: 'ريال ديبورتيفو لاكورونيا', league: 'الدوري الإسباني' },
+  { name: 'إسبانيول', league: 'الدوري الإسباني' },
+  { name: 'ريال بيتيس', league: 'الدوري الإسباني' },
+  { name: 'ريال مدريد', league: 'الدوري الإسباني' },
+  { name: 'ريال سوسيداد', league: 'الدوري الإسباني' },
+  { name: 'إشبيلية', league: 'الدوري الإسباني' },
+  { name: 'فالنسيا', league: 'الدوري الإسباني' },
+  { name: 'فياريال', league: 'الدوري الإسباني' },
+  { name: 'أبها', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الأهلي', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الاتفاق', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الدرعية', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الفتح', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الفيصلي', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الفيحاء', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الحزم', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الهلال', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الاتحاد', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الخليج', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الخلود', league: 'الدوري السعودي للمحترفين' },
+  { name: 'النصر', league: 'الدوري السعودي للمحترفين' },
+  { name: 'القادسية', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الرياض', league: 'الدوري السعودي للمحترفين' },
+  { name: 'الشباب', league: 'الدوري السعودي للمحترفين' },
+  { name: 'التعاون', league: 'الدوري السعودي للمحترفين' },
+  { name: 'نيوم', league: 'الدوري السعودي للمحترفين' },
+  { name: 'أولمبيك أقبو', league: 'الدوري الجزائري' },
+  { name: 'شبيبة القبائل', league: 'الدوري الجزائري' },
+  { name: 'شبيبة الساورة', league: 'الدوري الجزائري' },
+  { name: 'أولمبي الشلف', league: 'الدوري الجزائري' },
+  { name: 'اتحاد بسكرة', league: 'الدوري الجزائري' },
+  { name: 'اتحاد خنشلة', league: 'الدوري الجزائري' },
+  { name: 'اتحاد الجزائر', league: 'الدوري الجزائري' },
+  { name: 'اتحاد بن عكنون', league: 'الدوري الجزائري' },
+  { name: 'شباب بلوزداد', league: 'الدوري الجزائري' },
+  { name: 'شباب قسنطينة', league: 'الدوري الجزائري' },
+  { name: 'شباب تموشنت', league: 'الدوري الجزائري' },
+  { name: 'مولودية الجزائر', league: 'الدوري الجزائري' },
+  { name: 'مولودية وهران', league: 'الدوري الجزائري' },
+  { name: 'مولودية البيض', league: 'الدوري الجزائري' },
+  { name: 'وفاق سطيف', league: 'الدوري الجزائري' },
+  { name: 'مولودية رويسات', league: 'الدوري الجزائري' }
 ];
 
 function switchPage(tabId, titleText, pushState = true) {
@@ -61,19 +175,16 @@ function openAuthPage(pushState = true) {
 
 function toggleTheme() {
   const htmlEl = document.documentElement;
-  const currentTheme = htmlEl.getAttribute('data-theme');
+  const currentTheme = htmlEl.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
   htmlEl.setAttribute('data-theme', newTheme);
-  
+  try { localStorage.setItem('ipo_theme', newTheme); } catch (e) {}
   const textEl = document.getElementById('theme-text');
   const iconEl = document.getElementById('theme-icon-symbol');
-  if(textEl) textEl.innerText = newTheme === 'light' ? 'الوضع الفاتح' : 'الوضع الداكن';
-  if(iconEl) iconEl.innerText = newTheme === 'light' ? '☀️' : '🌙';
-
+  if (textEl) textEl.textContent = newTheme === 'light' ? 'الوضع الفاتح' : 'الوضع الداكن';
+  if (iconEl) iconEl.textContent = newTheme === 'light' ? '☀️' : '🌙';
   const appLogoImg = document.getElementById('header-app-logo');
-  if(appLogoImg) {
-    appLogoImg.src = newTheme === 'light' ? logoLight : logoDark;
-  }
+  if (appLogoImg) appLogoImg.src = newTheme === 'light' ? logoLight : logoDark;
 }
 
 function toggleAuthMode(mode) {
@@ -107,7 +218,7 @@ function previewDeviceImage(event) {
 
 function registerUserAccount() {
   const name = document.getElementById('reg-name').value.trim();
-  const email = document.getElementById('reg-email').value.trim();
+  const email = document.getElementById('reg-email').value.trim().toLowerCase();
   const pass = document.getElementById('reg-pass').value.trim();
 
   if(!name || !email || pass.length < 6) {
@@ -136,8 +247,15 @@ function registerUserAccount() {
   usersList.push(newUserData);
   localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
   localStorage.setItem('ipo_user_account', JSON.stringify(newUserData));
+  localStorage.setItem('ipo_user_name', newUserData.name);
+  localStorage.setItem('ipo_user_email', newUserData.email);
+  localStorage.setItem('ipo_user_bio', '');
+  localStorage.setItem('ipo_user_avatar', newUserData.avatar || '');
+  localStorage.setItem('ipo_user_cover', '');
+  localStorage.setItem('ipo_fav_team', '');
+  localStorage.setItem('ipo_fav_team_logo', '');
   localStorage.setItem('ipo_logged_in', 'true');
-
+  switchPage('auth', 'حسابي', true);
   checkUserSession();
 }
 
@@ -151,6 +269,7 @@ function verifyLogin() {
   if(foundUser) {
     localStorage.setItem('ipo_user_account', JSON.stringify(foundUser));
     localStorage.setItem('ipo_logged_in', 'true');
+    switchPage('auth', 'حسابي', true);
     checkUserSession();
   } else {
     alert('خطأ في اسم المستخدم/البريد أو كلمة المرور!');
@@ -163,67 +282,26 @@ function checkUserSession() {
   const loginForm = document.getElementById('form-login');
   const profileContainer = document.getElementById('user-profile-container');
   const mainTitle = document.getElementById('auth-main-title');
-  const miniAvatar = document.getElementById('header-mini-avatar');
 
   if (isLoggedIn) {
-    if(regForm) regForm.style.display = 'none';
-    if(loginForm) loginForm.style.display = 'none';
-    if(profileContainer) profileContainer.style.display = 'block';
-    if(mainTitle) mainTitle.innerText = 'الملف الشخصي';
+    if (regForm) regForm.style.display = 'none';
+    if (loginForm) loginForm.style.display = 'none';
+    if (profileContainer) profileContainer.style.display = 'block';
+    if (mainTitle) mainTitle.textContent = 'الملف الشخصي';
 
-    const user = JSON.parse(localStorage.getItem('ipo_user_account') || '{}');
-    
-    const nameElement = document.getElementById('profile-name');
-    
-    if (user.email === 'abdodoulat77@gmail.com') {
-      nameElement.innerHTML = `${user.name || 'مستخدم'} <span style="display: inline-flex; align-items: center; justify-content: center; background: #0ea5e9; color: white; border-radius: 50%; width: 14px; height: 14px; font-size: 9px; margin-right: 4px;" title="حساب موثق">✓</span>`;
-      nameElement.style.color = "var(--accent-color)";
-      nameElement.style.textShadow = "0 0 10px rgba(59, 130, 246, 0.5)";
-    } else {
-      nameElement.innerText = user.name || 'مستخدم';
-      nameElement.style.color = "var(--text-primary)";
-      nameElement.style.textShadow = "none";
-    }
-
-    document.getElementById('profile-email').innerText = user.email || '';
-    
-    const avatarImg = document.getElementById('profile-avatar');
-    if(avatarImg) avatarImg.src = user.avatar || "https://i.ibb.co/6y45s1x/user.png";
-    if(miniAvatar) miniAvatar.src = user.avatar || "https://i.ibb.co/6y45s1x/user.png";
-
-    const coverBg = document.getElementById('profile-cover-bg');
-    if(coverBg && user.cover) {
-      coverBg.style.backgroundImage = `url(${user.cover})`;
-    }
-
-    const favTeamNameText = document.getElementById('fav-team-name-text');
-    const favTeamLogoPreview = document.getElementById('fav-team-logo-preview');
-    
-    if (user.favTeamName && user.favTeamName.trim() !== '') {
-      if(favTeamNameText) favTeamNameText.innerText = user.favTeamName;
-      if(favTeamLogoPreview && user.favTeamLogo) favTeamLogoPreview.src = user.favTeamLogo;
-    }
-
-    const bioInput = document.getElementById('profile-bio-input');
-    const bioViewMode = document.getElementById('bio-view-mode');
-    const bioEditMode = document.getElementById('bio-edit-mode');
-    const bioDisplayText = document.getElementById('bio-display-text');
-
-    if(user.bio && user.bio.trim() !== '') {
-      if(bioInput) bioInput.value = user.bio;
-      if(bioDisplayText) bioDisplayText.innerText = user.bio;
-      if(bioViewMode) bioViewMode.style.display = 'block';
-      if(bioEditMode) bioEditMode.style.display = 'none';
-    } else {
-      if(bioInput) bioInput.value = '';
-      if(bioViewMode) bioViewMode.style.display = 'none';
-      if(bioEditMode) bioEditMode.style.display = 'block';
-    }
+    const user = buildIPOProfileUser();
+    applyIPOProfileUser(user);
   } else {
-    if(profileContainer) profileContainer.style.display = 'none';
-    if(regForm) regForm.style.display = 'block';
-    if(mainTitle) mainTitle.innerText = 'إنشاء حساب جديد';
+    if (profileContainer) profileContainer.style.display = 'none';
+    if (regForm) regForm.style.display = 'block';
+    if (loginForm) loginForm.style.display = 'none';
+    if (mainTitle) mainTitle.textContent = 'إنشاء حساب جديد';
   }
+
+  const homeTitle = document.getElementById('home-auth-title');
+  const homeDesc = document.getElementById('home-auth-desc');
+  if (homeTitle) homeTitle.textContent = isLoggedIn ? 'حسابي / الملف الشخصي' : 'حسابي / تسجيل الدخول';
+  if (homeDesc) homeDesc.textContent = isLoggedIn ? 'عرض وتعديل ملفك الشخصي' : 'سجل حساباً جديداً أو الدخول لحسابك المسجل';
 }
 
 function saveUserBio() {
@@ -272,65 +350,107 @@ function enableBioEdit() {
 
 function openTeamSelectorModal() {
   const modal = document.getElementById('team-selector-modal');
-  if(modal) {
-    modal.style.display = 'flex';
-    renderTeamsList(globalTeamsList);
+  if (!modal) return;
+
+  // إذا فُتحت القائمة من محرر الملف، نعدّل النسخة المؤقتة فقط
+  // ولا نحفظ الحساب إلا عند الضغط على "حفظ" في محرر الملف.
+  if (ipoProfileEditorOpen && !ipoProfileDraft) {
+    ipoProfileDraft = buildIPOProfileUser();
   }
+
+  const search = document.getElementById('team-search-input');
+  if (search) search.value = '';
+  modal.style.display = 'flex';
+  renderTeamsList(globalTeamsList);
 }
 
 function closeTeamSelectorModal() {
   const modal = document.getElementById('team-selector-modal');
-  if(modal) modal.style.display = 'none';
+  if (modal) modal.style.display = 'none';
 }
 
 function renderTeamsList(teams) {
   const container = document.getElementById('teams-list-container');
-  if(!container) return;
+  if (!container) return;
+  container.innerHTML = '';
 
-  if(teams.length === 0) {
-    container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-secondary); font-size: 11px;">لا توجد نتائج مطابقة للبحث</div>';
+  if (!Array.isArray(teams) || teams.length === 0) {
+    container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-secondary);font-size:12px;">لا توجد نتائج مطابقة</div>';
     return;
   }
 
-  let html = '';
-  teams.forEach(team => {
-    let isNeutral = team.name.includes("محايد");
-    html += `
-      <div onclick="selectUserFavoriteTeam('${team.name}', '${team.logo}')" style="display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: ${isNeutral ? 'var(--card-bg)' : 'var(--input-bg)'}; border: 1px solid ${isNeutral ? 'var(--accent-color)' : 'var(--card-border)'}; border-radius: 10px; cursor: pointer; transition: background 0.2s;">
-        <img src="${team.logo}" style="width: 26px; height: 26px; object-fit: contain;">
-        <span style="font-size: 12px; font-weight: 700; color: var(--text-primary);">${team.name}</span>
-      </div>
-    `;
+  const groups = {};
+  teams.forEach((team, index) => {
+    const league = team.league || 'أندية أخرى';
+    if (!groups[league]) groups[league] = [];
+    groups[league].push({ team, index });
   });
-  container.innerHTML = html;
+
+  Object.keys(groups).forEach(league => {
+    const title = document.createElement('div');
+    title.className = 'team-league-title';
+    title.textContent = league;
+    container.appendChild(title);
+
+    groups[league].forEach(({team}) => {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'team-option-row';
+      button.innerHTML = `
+        <span class="team-option-ball">⚽</span>
+        <span class="team-option-name"></span>
+        <span class="team-option-arrow">‹</span>`;
+      button.querySelector('.team-option-name').textContent = team.name || 'فريق';
+      button.addEventListener('click', () => selectUserFavoriteTeam(team.name || 'فريق'));
+      container.appendChild(button);
+    });
+  });
 }
 
 function filterTeamsList() {
-  const query = document.getElementById('team-search-input').value.trim().toLowerCase();
-  const filtered = globalTeamsList.filter(t => t.name.toLowerCase().includes(query));
+  const input = document.getElementById('team-search-input');
+  const query = (input?.value || '').trim().toLowerCase();
+  const filtered = (Array.isArray(globalTeamsList) ? globalTeamsList : []).filter(team =>
+    String(team.name || '').toLowerCase().includes(query) ||
+    String(team.league || '').toLowerCase().includes(query)
+  );
   renderTeamsList(filtered);
 }
 
-function selectUserFavoriteTeam(teamName, teamLogo) {
-  let user = JSON.parse(localStorage.getItem('ipo_user_account') || '{}');
-  
-  if (teamName.includes("محايد")) {
-    user.favTeamName = "محايد";
-    user.favTeamLogo = "https://i.ibb.co/6y45s1x/user.png";
-  } else {
-    user.favTeamName = teamName;
-    user.favTeamLogo = teamLogo;
+function selectUserFavoriteTeam(teamName) {
+  try {
+    const cleanTeamName = String(teamName || '').trim();
+    if (!cleanTeamName) return;
+
+    if (typeof ipoProfileEditorOpen !== 'undefined' && ipoProfileEditorOpen) {
+      if (!ipoProfileDraft) ipoProfileDraft = buildIPOProfileUser();
+      ipoProfileDraft.favTeamName = cleanTeamName;
+      ipoProfileDraft.favTeamLogo = '';
+
+      const editorTeam = document.getElementById('profile-editor-team-name');
+      if (editorTeam) editorTeam.textContent = cleanTeamName;
+      closeTeamSelectorModal();
+      return;
+    }
+
+    // اختيار النادي من بطاقة الملف خارج وضع التعديل: حفظ فوري.
+    const user = buildIPOProfileUser();
+    user.favTeamName = cleanTeamName;
+    user.favTeamLogo = '';
+    syncIPOUserEverywhere(user);
+    applyIPOProfileUser(user);
+    closeTeamSelectorModal();
+  } catch (error) {
+    console.error('IPO TV favorite team error:', error);
+    alert('حدث خطأ أثناء حفظ النادي المفضل. حاول مرة أخرى.');
   }
-  
-  localStorage.setItem('ipo_user_account', JSON.stringify(user));
-
-  let usersList = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
-  usersList = usersList.map(u => u.email === user.email ? user : u);
-  localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
-
-  closeTeamSelectorModal();
-  checkUserSession();
 }
+
+// ضمان إمكانية استدعاء الوظيفة من عناصر الواجهة القديمة أو من HTML.
+window.selectUserFavoriteTeam = selectUserFavoriteTeam;
+window.openTeamSelectorModal = openTeamSelectorModal;
+window.closeTeamSelectorModal = closeTeamSelectorModal;
+window.filterTeamsList = filterTeamsList;
 
 function updateProfileAvatar(event) {
   const file = event.target.files[0];
@@ -374,78 +494,6 @@ function logoutAccount() {
   localStorage.setItem('ipo_logged_in', 'false');
   checkUserSession();
   switchPage('home', 'IPO TV');
-}
-
-// =====================================================================
-// نظام الذكاء الاصطناعي الحقيقي المطور والمحلل الكروي الذكي في تطبيق IPO TV
-// =====================================================================
-function sendAIChatMessage() {
-    const inputField = document.getElementById('ai-chat-input');
-    const messagesContainer = document.getElementById('ai-chat-messages');
-    
-    if (!inputField || !messagesContainer) return;
-
-    const userMessageText = inputField.value.trim();
-    if (!userMessageText) return;
-
-    // 1. عرض رسالة المستخدم في الواجهة
-    const userBubble = document.createElement('div');
-    userBubble.style.cssText = "background: var(--accent-color); color: #fff; padding: 8px 12px; border-radius: 10px; align-self: flex-end; max-width: 85%; word-break: break-word;";
-    userBubble.textContent = userMessageText;
-    messagesContainer.appendChild(userBubble);
-
-    inputField.value = '';
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-    // 2. محاكاة مؤشر الكتابة للذكاء الاصطناعي لإضفاء واقعية حقيقية
-    const typingBubble = document.createElement('div');
-    typingBubble.id = "ai-typing-indicator";
-    typingBubble.style.cssText = "background: var(--input-bg); padding: 8px 12px; border-radius: 10px; align-self: flex-start; max-width: 85%; color: var(--text-secondary); font-style: italic;";
-    typingBubble.textContent = "جاري التحليل وصياغة الرد الذكي...";
-    messagesContainer.appendChild(typingBubble);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
-
-    // 3. تحليل السؤال بدقة وخوارزمية ذكية متقدمة
-    setTimeout(() => {
-        const indicator = document.getElementById('ai-typing-indicator');
-        if (indicator) indicator.remove();
-
-        const aiBubble = document.createElement('div');
-        aiBubble.style.cssText = "background: var(--input-bg); padding: 10px 14px; border-radius: 10px; align-self: flex-start; max-width: 85%; color: var(--text-primary); word-break: break-word; line-height: 1.5;";
-        
-        const q = userMessageText.toLowerCase();
-        let aiResponse = "";
-
-        // تحليل الأسئلة المتعلقة بأعمار اللاعبين ونجوم الكرة
-        if (q.includes('مبابي') || q.includes('كيليان')) {
-            aiResponse = "⚽ **كيليان مبابي:** مهاجم نادي ريال مدريد والمنتخب الفرنسي. يُعد من أسرع وأخطر المهاجمين في العالم، ويمتاز بقدرة فائقة على الحسم والإنهاء أمام الشباك.";
-        } else if (q.includes('هالاند') || q.includes('إيرلينغ')) {
-            aiResponse = "⚽ **إيرلينغ هالاند:** ماكينة الأهداف النرويجية ومهاجم نادي مانشستر سيتي. يتميز بقوة بدنية هائلة وسجل تهديفي مرعب في الدوري الإنجليزي الممتاز وأبطال أوروبا.";
-        } else if (q.includes('ميسي') || q.includes('ليونيل')) {
-            aiResponse = "🐐 **ليونيل ميسي:** أسطورة كرة القدم الحية وقائد منتخب الأرجنتين ونادي إنتر ميامي. الفائز بالكرة الذهبية 8 مرات، ويُعتبره الكثيرون الأعظم في تاريخ الساحرة المستديرة.";
-        } else if (q.includes('رونالدو') || q.includes('كريستيانو') || q.includes('الدحمي')) {
-            aiResponse = "👑 **كريستيانو رونالدو:** الأسطورة البرتغالية الهداف التاريخي لكرة القدم وقائد نادي النصر السعودي. رمز الاحتراف والانضباط والتحتحم والتسجيل بمختلف الطرق.";
-        } else if (q.includes('ريال مدريد') || q.includes('الملكي')) {
-            aiResponse = "⚪ **نادي ريال مدريد الإسباني:** النادي الأكثر تتويجاً ببطولة دوري أبطال أوروبا (15 لقباً). يعتمد الفريق على مزيج فريد من الخبرة والشباب تحت قيادة مميزة.";
-        } else if (q.includes('برشلونة') || q.includes('البارسا')) {
-            aiResponse = "🔵🔴 **نادي برشلونة الإسباني:** عملاق كتالونيا المعروف بأسلوبه التاريخي (التيكي تاكا) وتصعيده الدائم للمواهب الخارقة من أكاديمية لاماسيا.";
-        } else if (q.includes('عمر') || q.includes('سن') || q.includes('كم عمر') || q.includes('مواليد')) {
-            aiResponse = `📊 **تحليل الأعمار:** بصفتي مساعدك الكروي الذكي في IPO TV، يمكنني إخبارك أن جيل الشباب الحالي (مثل مبابي وهالاند وفينيسيوس) يقودون حقبة كروية جديدة لموسم 2026-2027 بكل قوة واقتدار. هل تقصد لاعباً معيناً تريد معرفة عمره الدقيق؟`;
-        } else if (q.includes('مباريات') || q.includes('اليوم') || q.includes('ماتش') || q.includes('موعد') || q.includes('جدول')) {
-            aiResponse = `📅 يمكنك الانتقال إلى قسم **"مباريات اليوم"** في القائمة الرئيسية لمتابعة مواعيد وتواقيت أبرز مباريات موسم 2026-2027 حصرياً عبر تطبيقك IPO TV.`;
-        } else if (q.includes('دوري') || q.includes('ترتيب') || q.includes('هدافو') || q.includes('أبطال')) {
-            aiResponse = `🏆 تستطيع استعراض جدول ترتيب الدوريات الخمس الكبرى لحظة بلحظة عبر قسم **"جدول الدوريات"** المتاح في الصفحة الرئيسية للتطبيق.`;
-        } else if (q.includes('مرحبا') || q.includes('السلام') || q.includes('أهلاً') || q.includes('هلا') || q.includes('صباح') || q.includes('مساء')) {
-            aiResponse = `أهلاً بك يا صديقي! أنا خبيرك الكروي الذكي المطور خصيصاً داخل تطبيق **IPO TV**. اسألني عن أي فريق، مباراة، بطولة، أو نجم كروي وسأحلل لك الموقف بدقة تامة!`;
-        } else {
-            // رد ذكي وعام يفهم محتوى السؤال الكروي بعمق
-            aiResponse = `⚽ بصفتي ذكاءً اصطناعياً متخصَصاً في شؤون كرة القدم لموسم 2026-2027، لقد تلقيت سؤالك حول (${userMessageText}). أؤكد لك أن المنافسة هذا الموسم في الدوريات الكبرى وأبطال أوروبا تبلغ ذروتها؛ تفضل بسؤالي بتفاصيل أكثر عن أي نادي أو لاعب لتستمتع بتحليل شامل وفوري!`;
-        }
-
-        aiBubble.textContent = aiResponse;
-        messagesContainer.appendChild(aiBubble);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-    }, 900);
 }
 
 function openLeagueDetails(leagueId, leagueName, pushState = true) {
@@ -530,13 +578,236 @@ window.onload = function() {
     history.replaceState({ tab: 'home' }, '', '#home');
   }
 
-  // دعم زر Enter للإرسال في محادثة الذكاء الاصطناعي
-  const aiInput = document.getElementById('ai-chat-input');
-  if (aiInput) {
-      aiInput.addEventListener('keypress', function (e) {
-          if (e.key === 'Enter') {
-              sendAIChatMessage();
-          }
-      });
-  }
+
 };
+function getCurrentIPOUser() {
+  try {
+    const raw = localStorage.getItem('ipo_user_account');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && typeof parsed === 'object') return parsed;
+    }
+  } catch (e) {
+    console.warn('تعذر قراءة حساب المستخدم المحفوظ:', e);
+  }
+  return {
+    name: localStorage.getItem('ipo_user_name') || '',
+    email: localStorage.getItem('ipo_user_email') || '',
+    bio: localStorage.getItem('ipo_user_bio') || '',
+    avatar: localStorage.getItem('ipo_user_avatar') || '',
+    cover: localStorage.getItem('ipo_user_cover') || '',
+    favTeamName: localStorage.getItem('ipo_fav_team') || '',
+    favTeamLogo: localStorage.getItem('ipo_fav_team_logo') || ''
+  };
+}
+
+const VERIFIED_OWNER_EMAIL = 'abdodoulat77@gmail.com';
+
+function isVerifiedOwner(user = null) {
+  const account = user || getCurrentIPOUser();
+  return String(account?.email || '').trim().toLowerCase() === VERIFIED_OWNER_EMAIL;
+}
+
+function buildIPOProfileUser() {
+  const current = getCurrentIPOUser();
+  const user = {
+    ...current,
+    name: current.name || localStorage.getItem('ipo_user_name') || 'مستخدم IPO',
+    email: current.email || localStorage.getItem('ipo_user_email') || 'user@ipotv.com',
+    bio: current.bio ?? localStorage.getItem('ipo_user_bio') ?? '',
+    avatar: current.avatar || localStorage.getItem('ipo_user_avatar') || 'https://i.ibb.co/6y45s1x/user.png',
+    cover: current.cover || localStorage.getItem('ipo_user_cover') || '',
+    favTeamName: current.favTeamName || localStorage.getItem('ipo_fav_team') || 'اختر فريقك المفضّل',
+    favTeamLogo: current.favTeamLogo || localStorage.getItem('ipo_fav_team_logo') || 'https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg'
+  };
+  return user;
+}
+
+function applyIPOProfileUser(user) {
+  const safeUser = user || buildIPOProfileUser();
+  const displayAvatar = (!isVerifiedOwner(safeUser) && String(safeUser.avatar || '').toLowerCase().startsWith('data:image/gif'))
+    ? 'https://i.ibb.co/6y45s1x/user.png'
+    : (safeUser.avatar || 'https://i.ibb.co/6y45s1x/user.png');
+  const nameEl = document.getElementById('profile-name');
+  const emailEl = document.getElementById('profile-email');
+  const avatarEl = document.getElementById('profile-avatar');
+  const miniAvatar = document.getElementById('header-mini-avatar');
+  const bioEl = document.getElementById('bio-display-text');
+  const teamNameEl = document.getElementById('fav-team-name-text');
+  const coverEl = document.getElementById('profile-cover-bg');
+
+  if (nameEl) nameEl.textContent = safeUser.name || 'مستخدم IPO';
+  if (emailEl) emailEl.textContent = safeUser.email || '';
+  if (avatarEl) avatarEl.src = displayAvatar;
+  if (miniAvatar) miniAvatar.src = displayAvatar;
+  if (bioEl) bioEl.textContent = safeUser.bio || 'أضف نبذة تعريفية عنك...';
+  if (teamNameEl) teamNameEl.textContent = safeUser.favTeamName || 'اختر فريقك المفضّل';
+
+  if (coverEl) {
+    if (safeUser.cover && (safeUser.cover.startsWith('data:image') || safeUser.cover.startsWith('http'))) {
+      coverEl.style.background = `url("${safeUser.cover}") center/cover no-repeat`;
+    } else if (safeUser.cover) {
+      coverEl.style.background = safeUser.cover;
+    } else {
+      coverEl.style.background = 'linear-gradient(135deg,#0f172a 0%,#1d4ed8 48%,#3b82f6 100%)';
+    }
+  }
+}
+
+function loadUserData() {
+  const user = buildIPOProfileUser();
+  applyIPOProfileUser(user);
+}
+
+function syncIPOUserEverywhere(user) {
+  localStorage.setItem('ipo_user_account', JSON.stringify(user));
+  localStorage.setItem('ipo_user_name', user.name || 'مستخدم IPO');
+  localStorage.setItem('ipo_user_email', user.email || '');
+  localStorage.setItem('ipo_user_bio', user.bio || '');
+  localStorage.setItem('ipo_user_avatar', user.avatar || '');
+  localStorage.setItem('ipo_user_cover', user.cover || '');
+  localStorage.setItem('ipo_fav_team', user.favTeamName || '');
+  localStorage.setItem('ipo_fav_team_logo', user.favTeamLogo || '');
+
+  let usersList = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
+  if (user.email) {
+    let found = false;
+    usersList = usersList.map(u => {
+      if (u.email === user.email) { found = true; return {...u, ...user}; }
+      return u;
+    });
+    if (!found) usersList.push(user);
+    localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
+  }
+}
+
+function openProfileEditor(focus = '') {
+  const user = buildIPOProfileUser();
+  ipoProfileDraft = JSON.parse(JSON.stringify(user));
+  ipoProfileEditorOpen = true;
+
+  const modal = document.getElementById('profile-editor-modal');
+  const name = document.getElementById('profile-edit-name');
+  const email = document.getElementById('profile-edit-email');
+  const bio = document.getElementById('profile-edit-bio');
+  const avatar = document.getElementById('profile-editor-avatar-preview');
+  const cover = document.getElementById('profile-editor-cover-preview');
+  const team = document.getElementById('profile-editor-team-name');
+
+  if (name) name.value = ipoProfileDraft.name || '';
+  if (email) email.value = ipoProfileDraft.email || '';
+  if (bio) { bio.value = ipoProfileDraft.bio || ''; updateProfileBioCounter(); }
+  if (avatar) avatar.src = ipoProfileDraft.avatar || 'https://i.ibb.co/6y45s1x/user.png';
+  if (cover) {
+    cover.style.background = ipoProfileDraft.cover && (ipoProfileDraft.cover.startsWith('data:image') || ipoProfileDraft.cover.startsWith('http'))
+      ? `url("${ipoProfileDraft.cover}") center/cover no-repeat`
+      : (ipoProfileDraft.cover || 'linear-gradient(135deg,#0f172a,#2563eb)');
+  }
+  if (team) team.textContent = ipoProfileDraft.favTeamName || 'اختر فريقك المفضّل';
+
+  if (modal) { modal.classList.add('open'); modal.setAttribute('aria-hidden','false'); }
+  if (focus === 'cover') document.getElementById('profile-cover-editor-input')?.click();
+  if (focus === 'avatar') document.getElementById('profile-avatar-editor-input')?.click();
+}
+
+function closeProfileEditor() {
+  const modal = document.getElementById('profile-editor-modal');
+  if (modal) { modal.classList.remove('open'); modal.setAttribute('aria-hidden','true'); }
+  ipoProfileEditorOpen = false;
+  ipoProfileDraft = null;
+}
+
+function updateProfileBioCounter() {
+  const input = document.getElementById('profile-edit-bio');
+  const counter = document.getElementById('profile-bio-counter');
+  if (input && counter) counter.textContent = input.value.length;
+}
+
+function readProfileDraftFields() {
+  if (!ipoProfileDraft) ipoProfileDraft = buildIPOProfileUser();
+  const name = document.getElementById('profile-edit-name');
+  const bio = document.getElementById('profile-edit-bio');
+  if (name) ipoProfileDraft.name = name.value.trim() || 'مستخدم IPO';
+  if (bio) ipoProfileDraft.bio = bio.value.trim();
+  return ipoProfileDraft;
+}
+
+function handleProfileAvatarDraft(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    alert('الرجاء اختيار ملف صورة صالح.');
+    event.target.value = '';
+    return;
+  }
+  if (file.type === 'image/gif' && !isVerifiedOwner()) {
+    alert('ميزة الصورة المتحركة GIF متاحة للحساب الموثق فقط.');
+    event.target.value = '';
+    return;
+  }
+  if (file.size > 5 * 1024 * 1024) {
+    alert('حجم الصورة يجب ألا يتجاوز 5MB.');
+    event.target.value = '';
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (!ipoProfileDraft) ipoProfileDraft = buildIPOProfileUser();
+    ipoProfileDraft.avatar = e.target.result;
+    const preview = document.getElementById('profile-editor-avatar-preview');
+    if (preview) preview.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function handleProfileCoverDraft(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    if (!ipoProfileDraft) ipoProfileDraft = buildIPOProfileUser();
+    ipoProfileDraft.cover = e.target.result;
+    const preview = document.getElementById('profile-editor-cover-preview');
+    if (preview) preview.style.background = `url("${e.target.result}") center/cover no-repeat`;
+  };
+  reader.readAsDataURL(file);
+}
+
+function saveProfileChanges() {
+  const user = readProfileDraftFields();
+
+  // الفريق المختار داخل محرر الملف جزء من نفس المسودة،
+  // لذلك يتم حفظه مع الاسم والبايو والصورة والغلاف في ضغطة واحدة.
+  if (!user.favTeamName) user.favTeamName = 'اختر فريقك المفضّل';
+  user.favTeamLogo = '';
+
+  syncIPOUserEverywhere(user);
+  applyIPOProfileUser(user);
+  closeTeamSelectorModal();
+  closeProfileEditor();
+  alert('تم حفظ تعديلات الملف الشخصي والنادي المفضل بنجاح ✓');
+}
+
+// تحديثات التوافق مع الأزرار القديمة إن وجدت.
+function updateProfileAvatar(event) { handleProfileAvatarDraft(event); }
+function updateProfileCover(event) { handleProfileCoverDraft(event); }
+function enableBioEdit() { openProfileEditor(); }
+function cancelBioEdit() { closeProfileEditor(); }
+function saveUserBio() { saveProfileChanges(); }
+
+window.addEventListener('DOMContentLoaded', function () {
+  const bio = document.getElementById('profile-edit-bio');
+  if (bio) bio.addEventListener('input', updateProfileBioCounter);
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && ipoProfileEditorOpen) closeProfileEditor();
+  });
+
+  const modal = document.getElementById('profile-editor-modal');
+  if (modal) {
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) closeProfileEditor();
+    });
+  }
+});
