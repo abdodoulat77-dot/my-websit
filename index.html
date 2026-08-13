@@ -72,7 +72,6 @@
       <div onclick="openAuthPage()" class="header-profile-wrapper" title="حسابي / الملف الشخصي">
         <div class="header-profile-glow"></div>
         <img id="header-mini-avatar" src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" alt="Profile">
-        <div id="header-owner-frame" class="header-owner-frame" aria-hidden="true"></div>
       </div>
     </div>
   </header>
@@ -222,28 +221,18 @@
         <div class="public-profile-main">
           <div class="public-profile-avatar-wrap" id="public-profile-avatar-shell">
             <img id="public-profile-avatar" class="public-profile-avatar" src="https://i.ibb.co/6y45s1x/user.png" alt="صورة الحساب">
-            <div id="public-profile-owner-frame" class="owner-frame-overlay" aria-hidden="true"></div>
           </div>
-          <div class="public-profile-title-row">
-            <div>
-              <h3 id="public-profile-name">مستخدم IPO</h3>
-              <div id="public-profile-verified" class="verified-badge hidden">✓ موثّق من IPO TV</div>
+          <div class="public-profile-centered-info">
+            <h3 id="public-profile-name">مستخدم IPO</h3>
+            <div id="public-profile-verified" class="verified-badge hidden">✓ موثّق من IPO TV</div>
+            <p id="public-profile-bio" class="public-profile-bio">لا توجد نبذة تعريفية.</p>
+            <div class="public-profile-team">
+              <div class="public-profile-team-icon"><img src="https://i.ibb.co/5XTkSQGQ/pngtree-facebook-care-emoji-coronavirus-emoji-png-image-2198651-removebg-preview.png" alt=""></div>
+              <div>
+                <span>النادي المفضل</span>
+                <strong id="public-profile-team-name">غير محدد</strong>
+              </div>
             </div>
-            <div class="public-view-pill">🌐 ملف عام</div>
-          </div>
-          <p id="public-profile-email" class="public-profile-email"></p>
-          <p id="public-profile-bio" class="public-profile-bio">لا توجد نبذة تعريفية.</p>
-          <div class="public-profile-vip">✨ سيتم توفير ميزة VIP قريبًا</div>
-          <div class="public-profile-team">
-            <div class="public-profile-team-icon">⚽</div>
-            <div>
-              <span>النادي المفضل</span>
-              <strong id="public-profile-team-name">غير محدد</strong>
-            </div>
-          </div>
-          <div class="public-profile-info-grid">
-            <div><span>الحساب</span><strong id="public-profile-account-label">عام</strong></div>
-            <div><span>الحالة</span><strong id="public-profile-account-status">نشط</strong></div>
           </div>
         </div>
       </section>
@@ -305,36 +294,34 @@
           <!-- الغلاف أولاً -->
           <div id="profile-cover-bg" class="profile-cover">
             <div class="profile-cover-shade"></div>
-            <button type="button" class="profile-cover-camera" onclick="openProfileEditor('cover')" aria-label="تعديل الغلاف">📷</button>
           </div>
 
           <!-- معلومات الحساب -->
           <div class="profile-main">
             <div class="profile-avatar-wrap" id="profile-avatar-shell">
               <img id="profile-avatar" src="" class="profile-avatar-img" alt="صورة الحساب">
-              <div id="profile-owner-frame" class="owner-frame-overlay" aria-hidden="true"></div>
-              <button type="button" class="profile-avatar-edit" onclick="openProfileEditor('avatar')" aria-label="تغيير صورة الحساب">📷</button>
             </div>
 
-            <div class="profile-head-row">
-              <div class="profile-identity">
+            <div class="profile-centered-info">
+              <div class="profile-name-line">
                 <h3 id="profile-name">اسم المستخدم</h3>
-                <div id="profile-public-status" class="profile-public-status">🌐 ملف عام</div>
-                <p id="profile-email">email@gmail.com</p>
               </div>
-              <button type="button" class="profile-edit-main-btn" onclick="openProfileEditor()">✏️ تعديل الملف</button>
-            </div>
 
-            <p id="bio-display-text" class="profile-bio-text">أضف نبذة تعريفية عنك...</p>
-            <div class="vip-coming-notice" role="note">✨ سيتم توفير ميزة VIP قريبًا</div>
+              <p id="bio-display-text" class="profile-bio-text">أضف نبذة تعريفية عنك...</p>
 
-            <div class="profile-team-card" onclick="openTeamSelectorModal()">
-              <div class="profile-team-icon" id="fav-team-logo-preview" aria-hidden="true">⚽</div>
-              <div class="profile-team-copy">
-                <span>الفريق المفضل</span>
-                <strong id="fav-team-name-text">اختر فريقك المفضّل</strong>
+              <div class="profile-team-card profile-team-readonly" role="group" aria-label="النادي المفضل">
+                <div class="profile-team-icon" id="fav-team-logo-preview" aria-hidden="true">
+                  <img src="https://i.ibb.co/5XTkSQGQ/pngtree-facebook-care-emoji-coronavirus-emoji-png-image-2198651-removebg-preview.png" alt="">
+                </div>
+                <div class="profile-team-copy">
+                  <span>النادي المفضل</span>
+                  <strong id="fav-team-name-text">اختر فريقك المفضّل</strong>
+                </div>
               </div>
-              <span class="profile-team-arrow">‹</span>
+
+              <div class="vip-coming-notice" role="note">✨ سيتم توفير ميزة VIP قريبًا</div>
+
+              <button type="button" class="profile-edit-main-btn profile-edit-main-btn-centered" onclick="openProfileEditor()">تعديل ملف</button>
             </div>
           </div>
         </section>
@@ -378,7 +365,7 @@
             </div>
 
             <button type="button" class="profile-editor-team-btn" onclick="openTeamSelectorModal()">
-              <span>⚽</span>
+              <img class="profile-editor-team-image" src="https://i.ibb.co/5XTkSQGQ/pngtree-facebook-care-emoji-coronavirus-emoji-png-image-2198651-removebg-preview.png" alt="">
               <span>الفريق المفضل</span>
               <strong id="profile-editor-team-name">اختر فريقك المفضّل</strong>
               <span>‹</span>

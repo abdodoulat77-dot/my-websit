@@ -429,13 +429,12 @@ function selectUserFavoriteTeam(teamName) {
       return;
     }
 
-    // اختيار النادي من بطاقة الملف خارج وضع التعديل: حفظ فوري.
-    const user = buildIPOProfileUser();
-    user.favTeamName = cleanTeamName;
-    user.favTeamLogo = '';
-    syncIPOUserEverywhere(user);
-    applyIPOProfileUser(user);
-    closeTeamSelectorModal();
+    // اختيار النادي مسموح به فقط من داخل محرر الملف.
+    if (!ipoProfileEditorOpen) {
+      closeTeamSelectorModal();
+      alert('يمكن تغيير النادي المفضل من داخل «تعديل الملف» فقط.');
+      return;
+    }
   } catch (error) {
     console.error('IPO TV favorite team error:', error);
     alert('حدث خطأ أثناء حفظ النادي المفضل. حاول مرة أخرى.');
@@ -603,6 +602,56 @@ function getCurrentIPOUser() {
 
 const VERIFIED_OWNER_EMAIL = 'abdodoulat77@gmail.com';
 
+// مزامنة بيانات الحساب في كل أماكن التخزين القديمة والجديدة حتى لا تضيع
+// تغييرات الاسم أو البايو أو النادي عند إعادة فتح التطبيق.
+function syncIPOUserEverywhere(user) {
+  if (!user || typeof user !== 'object') return null;
+
+  const normalized = {
+    name: String(user.name || 'مستخدم IPO').trim() || 'مستخدم IPO',
+    email: String(user.email || '').trim(),
+    pass: user.pass || '',
+    bio: String(user.bio ?? ''),
+    avatar: user.avatar || 'https://i.ibb.co/6y45s1x/user.png',
+    cover: user.cover || '',
+    favTeamName: String(user.favTeamName || '').trim(),
+    favTeamLogo: ''
+  };
+
+  try {
+    localStorage.setItem('ipo_user_account', JSON.stringify(normalized));
+    localStorage.setItem('ipo_user_name', normalized.name);
+    localStorage.setItem('ipo_user_email', normalized.email);
+    localStorage.setItem('ipo_user_bio', normalized.bio);
+    localStorage.setItem('ipo_user_avatar', normalized.avatar);
+    localStorage.setItem('ipo_user_cover', normalized.cover);
+    localStorage.setItem('ipo_fav_team', normalized.favTeamName);
+    localStorage.setItem('ipo_fav_team_logo', '');
+
+    let usersList = [];
+    try {
+      const parsed = JSON.parse(localStorage.getItem('ipo_users_list') || '[]');
+      usersList = Array.isArray(parsed) ? parsed : [];
+    } catch (e) {
+      usersList = [];
+    }
+
+    if (normalized.email) {
+      const index = usersList.findIndex(u => String(u?.email || '').trim().toLowerCase() === normalized.email.toLowerCase());
+      if (index >= 0) {
+        usersList[index] = { ...usersList[index], ...normalized };
+      } else {
+        usersList.push(normalized);
+      }
+      localStorage.setItem('ipo_users_list', JSON.stringify(usersList));
+    }
+  } catch (error) {
+    console.error('IPO TV account sync error:', error);
+  }
+
+  return normalized;
+}
+
 function isVerifiedOwner(user = null) {
   const account = user || getCurrentIPOUser();
   return String(account?.email || '').trim().toLowerCase() === VERIFIED_OWNER_EMAIL;
@@ -633,11 +682,9 @@ function applyIPOProfileUser(user) {
   const emailEl = document.getElementById('profile-email');
   const avatarEl = document.getElementById('profile-avatar');
   const miniAvatar = document.getElementById('header-mini-avatar');
-  const headerOwnerFrame = document.getElementById('header-owner-frame');
   const bioEl = document.getElementById('bio-display-text');
   const teamNameEl = document.getElementById('fav-team-name-text');
   const coverEl = document.getElementById('profile-cover-bg');
-  const ownerFrame = document.getElementById('profile-owner-frame');
 
   if (nameEl) {
     nameEl.innerHTML = `${escapeHTML(safeUser.name || 'مستخدم IPO')}${owner ? ' <span class="profile-verified-badge">✓ موثّق</span>' : ''}`;
@@ -645,10 +692,8 @@ function applyIPOProfileUser(user) {
   if (emailEl) emailEl.textContent = safeUser.email || '';
   if (avatarEl) avatarEl.src = displayAvatar;
   if (miniAvatar) miniAvatar.src = displayAvatar;
-  if (headerOwnerFrame) headerOwnerFrame.style.display = owner ? 'block' : 'none';
   if (bioEl) bioEl.textContent = safeUser.bio || 'أضف نبذة تعريفية عنك...';
   if (teamNameEl) teamNameEl.textContent = safeUser.favTeamName || 'اختر فريقك المفضّل';
-  if (ownerFrame) ownerFrame.style.display = owner ? 'block' : 'none';
   refreshPublicOwnerBranding();
 
   if (coverEl) {
@@ -665,15 +710,10 @@ function applyIPOProfileUser(user) {
 
 function refreshPublicOwnerBranding() {
   const emailEl = document.getElementById('public-profile-email');
-  const frameEl = document.getElementById('public-profile-owner-frame');
   const verifiedEl = document.getElementById('public-profile-verified');
   if (!emailEl) return;
 
   const isOwner = String(emailEl.textContent || '').trim().toLowerCase() === VERIFIED_OWNER_EMAIL;
-  if (frameEl) {
-    frameEl.style.display = isOwner ? 'block' : 'none';
-    frameEl.setAttribute('aria-hidden', isOwner ? 'false' : 'true');
-  }
   if (verifiedEl) {
     verifiedEl.classList.toggle('hidden', !isOwner);
     verifiedEl.style.display = isOwner ? 'inline-flex' : 'none';
@@ -697,7 +737,6 @@ window.openPublicProfile = function(user) {
   const email = document.getElementById('public-profile-email');
   const bio = document.getElementById('public-profile-bio');
   const team = document.getElementById('public-profile-team-name');
-  const ownerFrame = document.getElementById('public-profile-owner-frame');
   const verified = document.getElementById('public-profile-verified');
   if (name) name.textContent = u.name || 'مستخدم IPO';
   if (email) email.textContent = u.email || '';
@@ -706,7 +745,6 @@ window.openPublicProfile = function(user) {
   if (avatar) avatar.src = u.avatar || 'https://i.ibb.co/6y45s1x/user.png';
   if (cover) cover.style.background = u.cover ? `url("${u.cover}") center/cover no-repeat` : 'linear-gradient(135deg,#0f172a,#2563eb)';
   const isOwner = String(u.email || '').trim().toLowerCase() === VERIFIED_OWNER_EMAIL;
-  if (ownerFrame) ownerFrame.style.display = isOwner ? 'block' : 'none';
   if (verified) { verified.classList.toggle('hidden', !isOwner); verified.style.display = isOwner ? 'inline-flex' : 'none'; }
   const tab = document.getElementById('tab-public-profile');
   if (tab) tab.classList.add('active');
@@ -820,18 +858,26 @@ function handleProfileCoverDraft(event) {
 
 function saveProfileChanges() {
   const user = readProfileDraftFields();
+  if (!user || !user.email) {
+    alert('تعذر حفظ الملف. أعد تسجيل الدخول ثم حاول مرة أخرى.');
+    return;
+  }
 
-  // الفريق المختار داخل محرر الملف جزء من نفس المسودة،
-  // لذلك يتم حفظه مع الاسم والبايو والصورة والغلاف في ضغطة واحدة.
-  if (!user.favTeamName) user.favTeamName = 'اختر فريقك المفضّل';
+  user.name = (document.getElementById('profile-edit-name')?.value || user.name || 'مستخدم IPO').trim() || 'مستخدم IPO';
+  user.bio = document.getElementById('profile-edit-bio')?.value ?? user.bio ?? '';
+  user.favTeamName = String(user.favTeamName || '').trim();
   user.favTeamLogo = '';
 
-  syncIPOUserEverywhere(user);
-  applyIPOProfileUser(user);
+  const saved = syncIPOUserEverywhere(user);
+  if (!saved) return;
+
+  ipoProfileDraft = JSON.parse(JSON.stringify(saved));
+  applyIPOProfileUser(saved);
   closeTeamSelectorModal();
   closeProfileEditor();
-  alert('تم حفظ تعديلات الملف الشخصي والنادي المفضل بنجاح ✓');
+  alert('تم حفظ الاسم والبايو والنادي المفضل بنجاح ✓');
 }
+
 
 // تحديثات التوافق مع الأزرار القديمة إن وجدت.
 function updateProfileAvatar(event) { handleProfileAvatarDraft(event); }

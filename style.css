@@ -1851,7 +1851,7 @@ main {
   inset:-14px;
   border-radius:50%;
   pointer-events:none;
-  background:url('https://i.ibb.co/1fv1dcCv/download-removebg-preview.png') center/contain no-repeat;
+  background:url('https://i.ibb.co/YBf77qbD/pngtree-online-game-metal-frame-png-image-11321051.png') center/contain no-repeat;
   filter:drop-shadow(0 0 10px rgba(148,163,184,.35));
   z-index:6;
   animation:ownerFrameGlow 3s ease-in-out infinite alternate;
@@ -1868,7 +1868,7 @@ main {
 @media (max-width:600px) {
                 .owner-frame-overlay { inset:-11px; }
 }
-.header-owner-frame { display:none; position:absolute; inset:-8px; z-index:4; border-radius:50%; pointer-events:none; background:url('https://i.ibb.co/1fv1dcCv/download-removebg-preview.png') center/contain no-repeat; filter:drop-shadow(0 0 7px rgba(148,163,184,.35)); animation:ownerFrameGlow 3s ease-in-out infinite alternate; }
+.header-owner-frame { display:none; position:absolute; inset:-8px; z-index:4; border-radius:50%; pointer-events:none; background:url('https://i.ibb.co/YBf77qbD/pngtree-online-game-metal-frame-png-image-11321051.png') center/contain no-repeat; filter:drop-shadow(0 0 7px rgba(148,163,184,.35)); animation:ownerFrameGlow 3s ease-in-out infinite alternate; }
 
 
 /* التوثيق والإطار العام لصاحب التطبيق فقط */
@@ -1877,25 +1877,188 @@ main {
 #public-profile-owner-frame { z-index:8; }
 
 
-/* إطار صاحب التطبيق الجديد — متناسق مع صورة البروفايل */
-.owner-frame-overlay {
-  inset: -8px;
-  border-radius: 50%;
-  background: url("https://i.ibb.co/1fv1dcCv/download-removebg-preview.png") center center / 100% 100% no-repeat;
-  filter: drop-shadow(0 4px 10px rgba(0,0,0,.28));
-  transform-origin: center;
-  z-index: 8;
+/* ============================================================
+   الملف الشخصي — تنسيق مركزي جديد بدون أي إطار
+   ============================================================ */
+.header-owner-frame,
+.owner-frame-overlay,
+#public-profile-owner-frame {
+  display:none !important;
 }
-.profile-avatar-wrap .owner-frame-overlay { inset: -7px; }
-.public-profile-avatar-wrap .owner-frame-overlay { inset: -7px; }
-.header-owner-frame {
-  inset: -5px;
-  background: url("https://i.ibb.co/1fv1dcCv/download-removebg-preview.png") center center / 100% 100% no-repeat;
-  filter: drop-shadow(0 2px 7px rgba(0,0,0,.28));
-  z-index: 8;
+.profile-centered-info {
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+.profile-name-line {
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.profile-name-line #profile-name {
+  text-align:center;
+  margin:0;
+}
+.profile-centered-info .profile-bio-text {
+  width:100%;
+  max-width:560px;
+  margin:10px auto 16px;
+  text-align:center;
+}
+.profile-centered-info .profile-team-card {
+  max-width:560px;
+  justify-content:center;
+  text-align:center;
+}
+.profile-centered-info .profile-team-copy {
+  align-items:center;
+  text-align:center;
+}
+.profile-centered-info .vip-coming-notice {
+  width:100%;
+  max-width:560px;
+  margin:12px auto 0;
+  text-align:center;
+}
+.profile-edit-main-btn-centered {
+  width:min(560px,100%);
+  margin:16px auto 0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.public-profile-main .public-profile-centered-info {
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+.public-profile-email,
+.profile-email-hidden { display:none !important; }
+.public-profile-team {
+  width:min(560px,100%);
+  margin-inline:auto;
+  justify-content:center;
+  text-align:center;
 }
 @media (max-width:600px) {
-  .profile-avatar-wrap .owner-frame-overlay { inset: -6px; }
-  .public-profile-avatar-wrap .owner-frame-overlay { inset: -6px; }
-  .header-owner-frame { inset: -4px; }
+  .profile-centered-info .profile-bio-text { padding-inline:4px; }
+  .profile-centered-info .profile-team-card { width:100%; }
 }
+
+/* إصلاح وتوحيد بطاقة النادي المفضل خارج محرر الملف */
+.profile-centered-info .profile-team-card {
+  width: min(370px, 100%);
+  min-height: 62px;
+  padding: 12px 16px;
+  margin: 2px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  background: linear-gradient(135deg, var(--input-bg), var(--card-bg));
+  box-shadow: 0 8px 24px var(--shadow-color);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+.profile-centered-info .profile-team-card:hover {
+  transform: none;
+  border-color: var(--card-border);
+  box-shadow: 0 8px 24px var(--shadow-color);
+}
+.profile-centered-info .profile-team-readonly {
+  cursor: default;
+  user-select: text;
+}
+.profile-centered-info .profile-team-icon {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(59,130,246,.10);
+  box-shadow: 0 0 18px rgba(59,130,246,.10);
+  font-size: 21px;
+}
+.profile-centered-info .profile-team-copy {
+  flex: 0 1 auto;
+  min-width: 0;
+  align-items: center;
+  text-align: center;
+}
+.profile-centered-info .profile-team-copy span {
+  font-size: 10px;
+  color: var(--text-secondary);
+}
+.profile-centered-info .profile-team-copy strong {
+  max-width: min(320px, 58vw);
+  font-size: 13px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width:600px) {
+  .profile-centered-info .profile-team-card { width: min(100%, 360px); }
+  .profile-centered-info .profile-team-copy strong { max-width: 52vw; }
+}
+
+
+/* تحديثات واجهة الملف الشخصي */
+.profile-edit-main-btn-centered {
+  width: 154px !important;
+  min-width: 154px !important;
+  height: 48px !important;
+  padding: 0 20px !important;
+  border: 0 !important;
+  border-radius: 14px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  font-weight: 900 !important;
+  font-family: 'Cairo', sans-serif !important;
+  color: #fff !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 55%, #1d4ed8 100%) !important;
+  box-shadow: 0 8px 20px rgba(37,99,235,.28), inset 0 1px 0 rgba(255,255,255,.25) !important;
+  margin: 16px auto 0 !important;
+  cursor: pointer !important;
+  transition: transform .22s ease, box-shadow .22s ease, filter .22s ease !important;
+}
+.profile-edit-main-btn-centered:hover {
+  transform: translateY(-2px) !important;
+  filter: brightness(1.05) !important;
+  box-shadow: 0 12px 26px rgba(37,99,235,.34), inset 0 1px 0 rgba(255,255,255,.28) !important;
+}
+.profile-edit-main-btn-centered:active {
+  transform: translateY(1px) scale(.98) !important;
+  box-shadow: 0 5px 12px rgba(37,99,235,.24), inset 0 2px 5px rgba(0,0,0,.12) !important;
+}
+.profile-team-icon {
+  overflow: hidden;
+}
+.profile-team-icon img {
+  width: 30px;
+  height: 30px;
+  object-fit: contain;
+  display: block;
+}
+.profile-editor-team-btn {
+  grid-template-columns: 32px auto 1fr 20px !important;
+}
+.profile-editor-team-image {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
+.public-profile-team-icon { overflow:hidden; }
+.public-profile-team-icon img { width:28px; height:28px; object-fit:contain; display:block; }
