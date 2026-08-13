@@ -60,12 +60,6 @@
     </div>
     
     <div style="display: flex; align-items: center; gap: 8px;">
-      <button class="theme-toggle-pill" onclick="toggleTheme()">
-        <span class="theme-icon" id="theme-icon-symbol">🌙</span> <span id="theme-text">الوضع الداكن</span>
-      </button>
-      <button type="button" id="red-theme-header-btn" class="accent-theme-btn" onclick="toggleRedTheme()" style="display:none;" title="الوضع الأحمر">
-        <span>🔴</span><span>الوضع الأحمر</span>
-      </button>
             <button type="button" class="points-pill" id="header-points-pill" onclick="openPointsPage()" title="نقاطي">
         <span class="points-pill-star">★</span>
         <span id="header-points-value">0</span>
@@ -381,10 +375,21 @@
                 </div>
               </div>
 
-              <div class="vip-coming-notice" role="note">✨ سيتم توفير ميزة VIP قريبًا</div>
-
               <button type="button" class="profile-edit-main-btn profile-edit-main-btn-centered" onclick="openProfileEditor()">تعديل ملف</button>
               <button type="button" class="profile-points-main-btn" onclick="openPointsPage()"><span>★</span> نقاطي</button>
+
+              <div class="profile-theme-controls" aria-label="إعدادات مظهر التطبيق">
+                <button type="button" id="profile-theme-toggle-btn" class="profile-theme-control-btn" onclick="toggleTheme()">
+                  <span class="theme-icon" id="profile-theme-icon-symbol">🌙</span>
+                  <span id="profile-theme-text">الوضع الداكن</span>
+                </button>
+                <button type="button" id="profile-red-theme-btn" class="profile-theme-control-btn profile-red-theme-control" onclick="toggleRedTheme()" disabled title="اشترِ الوضع الأحمر من متجر النقاط أولاً">
+                  <span>🔴</span>
+                  <span id="profile-red-theme-text">الوضع الأحمر 🔒</span>
+                </button>
+              </div>
+
+              <div class="vip-coming-notice" role="note">✨ سيتم توفير ميزة VIP قريبًا</div>
             </div>
           </div>
         </section>

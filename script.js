@@ -182,8 +182,8 @@ function toggleTheme() {
     localStorage.setItem('ipo_theme_base', newTheme);
   } catch (e) {}
   updateThemeButtonUI();
+  updateProfileThemeControls();
   updateHeaderAppLogo(newTheme);
-  updateRedThemeUI();
 }
 
 
@@ -197,15 +197,21 @@ function isRedThemeUnlocked() {
 }
 
 function updateRedThemeUI() {
-  const headerBtn = document.getElementById('red-theme-header-btn');
+  const profileBtn = document.getElementById('profile-red-theme-btn');
+  const profileText = document.getElementById('profile-red-theme-text');
   const buyBtn = document.getElementById('red-theme-buy-btn');
   const activateBtn = document.getElementById('red-theme-activate-btn');
   const unlocked = isRedThemeUnlocked();
   const active = document.documentElement.getAttribute('data-theme') === 'red';
 
-  if (headerBtn) {
-    headerBtn.style.display = unlocked ? 'inline-flex' : 'none';
-    headerBtn.querySelector('span:last-child').textContent = active ? 'الوضع الأحمر ✓' : 'الوضع الأحمر';
+  if (profileBtn) {
+    profileBtn.disabled = !unlocked;
+    profileBtn.classList.toggle('is-unlocked', unlocked);
+    profileBtn.classList.toggle('is-active', active);
+    profileBtn.title = unlocked ? (active ? 'إيقاف الوضع الأحمر' : 'تفعيل الوضع الأحمر') : 'اشترِ الوضع الأحمر من متجر النقاط أولاً';
+  }
+  if (profileText) {
+    profileText.textContent = unlocked ? (active ? 'الوضع الأحمر ✓' : 'الوضع الأحمر') : 'الوضع الأحمر 🔒';
   }
   if (buyBtn) {
     buyBtn.style.display = unlocked ? 'none' : 'block';
@@ -217,6 +223,15 @@ function updateRedThemeUI() {
     activateBtn.style.display = unlocked ? 'block' : 'none';
     activateBtn.textContent = active ? 'إيقاف الوضع الأحمر' : 'تفعيل الوضع الأحمر';
   }
+}
+
+function updateProfileThemeControls() {
+  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const icon = document.getElementById('profile-theme-icon-symbol');
+  const text = document.getElementById('profile-theme-text');
+  if (icon) icon.textContent = theme === 'light' ? '☀️' : theme === 'red' ? '🔴' : '🌙';
+  if (text) text.textContent = theme === 'light' ? 'الوضع الفاتح' : theme === 'red' ? 'الوضع الأحمر' : 'الوضع الداكن';
+  updateRedThemeUI();
 }
 
 function buyRedThemeFeature() {
@@ -259,7 +274,7 @@ function toggleRedTheme() {
     if (next !== 'red') localStorage.setItem('ipo_theme_base', next);
   } catch (e) {}
   updateThemeButtonUI();
-  updateRedThemeUI();
+  updateProfileThemeControls();
 }
 
 function updateThemeButtonUI() {
@@ -466,10 +481,12 @@ function checkUserSession() {
 
     const user = buildIPOProfileUser();
     applyIPOProfileUser(user);
+    updateProfileThemeControls();
   } else {
     updatePointsUI(0);
     if (profileContainer) profileContainer.style.display = 'none';
     if (regForm) regForm.style.display = 'block';
+    updateProfileThemeControls();
     if (loginForm) loginForm.style.display = 'none';
     if (mainTitle) mainTitle.textContent = 'إنشاء حساب جديد';
   }
@@ -1135,7 +1152,7 @@ function restoreThemeState() {
   } catch (e) {}
 
   const user = getCurrentIPOUser();
-  if (theme === 'red' && !(isVerifiedOwner(user) && Boolean(user.redThemeUnlocked))) {
+  if (theme === 'red' && !(user && Boolean(user.redThemeUnlocked))) {
     theme = base;
     try { localStorage.setItem('ipo_theme', theme); } catch (e) {}
   }
