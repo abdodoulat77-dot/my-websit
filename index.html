@@ -25,17 +25,13 @@
 <body>
 
   <!-- شاشة افتتاحية حديثة -->
-  <div id="app-splash" class="app-splash" aria-label="شاشة بدء IPO TV">
-    <div class="splash-orbit splash-orbit-1"></div>
-    <div class="splash-orbit splash-orbit-2"></div>
-    <div class="splash-card">
-      <div class="splash-logo-wrap">
-        <img src="https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg" alt="IPO TV" class="splash-logo">
+  
+    
+    
+      
+      
       </div>
-      <div class="splash-title">IPO TV</div>
-      <div class="splash-subtitle">تجربة كروية عصرية في مكان واحد</div>
-      <div class="splash-progress"><span></span></div>
-      <div class="splash-status">جاري تجهيز التطبيق...</div>
+      
     </div>
   </div>
 
@@ -67,7 +63,7 @@
       <button class="theme-toggle-pill" onclick="toggleTheme()">
         <span class="theme-icon" id="theme-icon-symbol">🌙</span> <span id="theme-text">الوضع الداكن</span>
       </button>
-      <button type="button" id="owner-red-theme-btn" class="accent-theme-btn" onclick="toggleRedTheme()" style="display:none;" title="تفعيل الوضع الأحمر">
+      <button type="button" id="red-theme-header-btn" class="accent-theme-btn" onclick="toggleRedTheme()" style="display:none;" title="الوضع الأحمر">
         <span>🔴</span><span>الوضع الأحمر</span>
       </button>
             <button type="button" class="points-pill" id="header-points-pill" onclick="openPointsPage()" title="نقاطي">
@@ -241,33 +237,37 @@
           <div class="points-reward-icon">+7</div>
           <div>
             <strong>مكافأة الدخول</strong>
-            <p>تحصل على 7 نقاط مرة واحدة عند دخولك للتطبيق في كل جلسة جديدة.</p>
+            <p>تحصل على 7 نقاط مرة واحدة كل 24 ساعة عند استخدام التطبيق.</p>
           </div>
         </div>
 
-        <div class="points-shop-card">
-          <div class="points-shop-top">
-            <div>
-              <span class="points-shop-kicker">متجر المزايا</span>
-              <h3>صورة بروفايل متحركة GIF</h3>
-              <p>فعّل إمكانية استخدام صورة GIF متحركة في ملفك الشخصي.</p>
+        <div class="points-shop-grid">
+          <article class="points-feature-card points-feature-gif">
+            <div class="points-feature-icon">GIF</div>
+            <div class="points-feature-content">
+              <span class="points-feature-label">ميزة الملف الشخصي</span>
+              <h3>صورة بروفايل متحركة</h3>
+              <p>استخدم صورة GIF متحركة في صورة حسابك بعد تفعيل الميزة.</p>
             </div>
-            <div class="points-price-badge"><strong>300</strong><span>نقطة</span></div>
-          </div>
-          <div class="points-shop-status" id="gif-feature-status">الميزة غير مفعّلة</div>
-          <button type="button" class="points-buy-btn" id="gif-feature-buy-btn" onclick="buyAnimatedAvatarFeature()">شراء الميزة بـ 300 نقطة</button>
-          <div class="points-shop-item red-theme-feature">
-            <div class="points-shop-icon">🔴</div>
-            <div class="points-shop-info">
-              <strong>الوضع الأحمر</strong>
-              <span>خلفية حمراء مع لمسات سوداء — متاح لصاحب التطبيق فقط.</span>
+            <div class="points-feature-price"><strong>300</strong><span>نقطة</span></div>
+            <div class="points-shop-status" id="gif-feature-status">الميزة غير مفعّلة</div>
+            <button type="button" class="points-buy-btn" id="gif-feature-buy-btn" onclick="buyAnimatedAvatarFeature()">شراء بـ 300 نقطة</button>
+          </article>
+
+          <article class="points-feature-card points-feature-red">
+            <div class="points-feature-icon">●</div>
+            <div class="points-feature-content">
+              <span class="points-feature-label">مظهر التطبيق</span>
+              <h3>الخلفية الحمراء</h3>
+              <p>افتح مظهرًا أحمر مع لمسات سوداء واستعمله من زر الأوضاع.</p>
             </div>
-            <div class="points-price">60 نقطة</div>
-          </div>
-          <div class="points-shop-actions">
-            <button type="button" class="points-buy-btn" id="red-theme-buy-btn" onclick="buyRedThemeFeature()">شراء الوضع الأحمر بـ 60 نقطة</button>
-            <button type="button" class="points-buy-btn secondary" id="red-theme-activate-btn" onclick="toggleRedTheme()" style="display:none;">تفعيل الوضع الأحمر</button>
-          </div>
+            <div class="points-feature-price"><strong>60</strong><span>نقطة</span></div>
+            <div class="points-shop-status" id="red-theme-feature-status">الميزة غير مفعّلة</div>
+            <div class="points-shop-actions">
+              <button type="button" class="points-buy-btn" id="red-theme-buy-btn" onclick="buyRedThemeFeature()">شراء بـ 60 نقطة</button>
+              <button type="button" class="points-buy-btn secondary" id="red-theme-activate-btn" onclick="toggleRedTheme()" style="display:none;">تفعيل الوضع الأحمر</button>
+            </div>
+          </article>
         </div>
       </section>
     </div>

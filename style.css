@@ -2398,3 +2398,114 @@ main {
   color: #d97706 !important;
   text-shadow: 0 0 8px rgba(217,119,6,.20) !important;
 }
+
+
+/* IPO TV — main menu reveal animation */
+#tab-home.active .menu-card,
+#tab-home.active .home-card,
+#tab-home.active .menu-item {
+  animation: ipoMenuReveal .55s cubic-bezier(.2,.8,.2,1) both;
+}
+#tab-home.active .menu-card:nth-child(2), #tab-home.active .home-card:nth-child(2), #tab-home.active .menu-item:nth-child(2) { animation-delay:.05s; }
+#tab-home.active .menu-card:nth-child(3), #tab-home.active .home-card:nth-child(3), #tab-home.active .menu-item:nth-child(3) { animation-delay:.10s; }
+#tab-home.active .menu-card:nth-child(4), #tab-home.active .home-card:nth-child(4), #tab-home.active .menu-item:nth-child(4) { animation-delay:.15s; }
+#tab-home.active .menu-card:nth-child(5), #tab-home.active .home-card:nth-child(5), #tab-home.active .menu-item:nth-child(5) { animation-delay:.20s; }
+@keyframes ipoMenuReveal {
+  from { opacity:0; transform:translateY(18px) scale(.985); }
+  to { opacity:1; transform:translateY(0) scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #tab-home.active .menu-card,
+  #tab-home.active .home-card,
+  #tab-home.active .menu-item { animation:none !important; }
+}
+
+/* متجر المزايا - تصميم منظم */
+.points-shop-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-bottom:14px; }
+.points-feature-card { position:relative; overflow:hidden; border:1px solid var(--card-border); border-radius:22px; background:linear-gradient(145deg,var(--card-bg),color-mix(in srgb,var(--card-bg) 86%,var(--accent-color))); padding:18px; box-shadow:0 16px 36px var(--shadow-color); }
+.points-feature-card::after { content:""; position:absolute; width:130px; height:130px; border-radius:50%; top:-65px; left:-65px; background:var(--accent-color); opacity:.08; pointer-events:none; }
+.points-feature-icon { width:46px; height:46px; border-radius:14px; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; color:#fff; background:linear-gradient(135deg,var(--accent-color),#7c3aed); box-shadow:0 10px 22px rgba(37,99,235,.2); margin-bottom:12px; }
+.points-feature-red .points-feature-icon { font-size:30px; line-height:1; background:linear-gradient(135deg,#ef4444,#991b1b); box-shadow:0 10px 22px rgba(239,68,68,.24); }
+.points-feature-label { display:block; font-size:10px; font-weight:900; color:var(--accent-color); margin-bottom:4px; }
+.points-feature-red .points-feature-label { color:#ef4444; }
+.points-feature-content h3 { margin:0; font-size:15px; color:var(--text-primary); }
+.points-feature-content p { margin:6px 0 12px; color:var(--text-secondary); font-size:11px; line-height:1.75; min-height:38px; }
+.points-feature-price { display:flex; align-items:baseline; gap:5px; margin-bottom:10px; color:var(--text-primary); }
+.points-feature-price strong { font-size:25px; font-weight:900; }
+.points-feature-price span { font-size:10px; color:var(--text-secondary); font-weight:800; }
+.points-feature-card .points-shop-status { margin:0 0 8px; }
+.points-shop-actions { display:flex; gap:8px; }
+.points-shop-actions .points-buy-btn { flex:1; }
+.points-buy-btn.secondary { background:linear-gradient(135deg,#ef4444,#b91c1c); }
+[data-theme="light"] .points-feature-card { background:linear-gradient(145deg,#ffffff,#f1f5f9); }
+@media (max-width:700px) {
+  .points-shop-grid { grid-template-columns:1fr; gap:12px; }
+  .points-feature-card { padding:15px; border-radius:18px; }
+  .points-feature-content p { min-height:0; }
+}
+
+/* ===== Match dark/light theme button with the points badge ===== */
+.theme-toggle-pill {
+  min-width: 92px !important;
+  height: 36px !important;
+  padding: 0 12px !important;
+  border: 1px solid rgba(250,204,21,.38) !important;
+  border-radius: 12px !important;
+  gap: 5px !important;
+  color: #fef9c3 !important;
+  background: linear-gradient(145deg, rgba(250,204,21,.22), rgba(245,158,11,.08)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 7px 18px rgba(245,158,11,.15) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  font-size: 11px !important;
+  font-weight: 800 !important;
+}
+.theme-toggle-pill:hover {
+  transform: translateY(-2px) !important;
+  border-color: rgba(250,204,21,.55) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 10px 24px rgba(245,158,11,.22) !important;
+}
+.theme-toggle-pill:active {
+  transform: translateY(1px) scale(.98) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.12), 0 3px 10px rgba(245,158,11,.18) !important;
+}
+.theme-toggle-pill::before,
+.theme-toggle-pill::after { display:none !important; }
+.theme-toggle-pill .theme-icon,
+.theme-toggle-pill #theme-icon-symbol {
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 8px !important;
+  background: rgba(250,204,21,.16) !important;
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.18), inset -1px -1px 2px rgba(0,0,0,.12) !important;
+  font-size: 13px !important;
+}
+.theme-toggle-pill:hover .theme-icon,
+.theme-toggle-pill:hover #theme-icon-symbol {
+  transform: rotate(8deg) scale(1.04) !important;
+}
+[data-theme="light"] .theme-toggle-pill {
+  color: #172033 !important;
+  background: linear-gradient(145deg, #ffffff, #eef2f7) !important;
+  border-color: rgba(71,85,105,.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 7px 18px rgba(15,23,42,.10) !important;
+}
+[data-theme="light"] .theme-toggle-pill .theme-icon,
+[data-theme="light"] .theme-toggle-pill #theme-icon-symbol {
+  background: rgba(71,85,105,.08) !important;
+  box-shadow: inset 1px 1px 2px rgba(255,255,255,.95), inset -1px -1px 2px rgba(15,23,42,.08) !important;
+}
+@media (max-width:520px) {
+  .theme-toggle-pill {
+    min-width: 70px !important;
+    width: 70px !important;
+    height: 32px !important;
+    padding: 0 8px !important;
+    gap: 4px !important;
+    border-radius: 12px !important;
+    font-size: 9px !important;
+  }
+  .theme-toggle-pill #theme-text { display:inline !important; }
+  .theme-toggle-pill .theme-icon,
+  .theme-toggle-pill #theme-icon-symbol { width:20px !important; height:20px !important; font-size:12px !important; }
+}

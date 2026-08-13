@@ -187,26 +187,17 @@ function toggleTheme() {
 }
 
 
-function isRedThemeOwner() {
-  try {
-    const user = getCurrentIPOUser();
-    return isVerifiedOwner(user);
-  } catch (e) {
-    return false;
-  }
-}
-
 function isRedThemeUnlocked() {
   try {
     const user = getCurrentIPOUser();
-    return isRedThemeOwner() && Boolean(user.redThemeUnlocked);
+    return Boolean(user && user.redThemeUnlocked);
   } catch (e) {
     return false;
   }
 }
 
 function updateRedThemeUI() {
-  const headerBtn = document.getElementById('owner-red-theme-btn');
+  const headerBtn = document.getElementById('red-theme-header-btn');
   const buyBtn = document.getElementById('red-theme-buy-btn');
   const activateBtn = document.getElementById('red-theme-activate-btn');
   const unlocked = isRedThemeUnlocked();
@@ -217,9 +208,9 @@ function updateRedThemeUI() {
     headerBtn.querySelector('span:last-child').textContent = active ? 'الوضع الأحمر ✓' : 'الوضع الأحمر';
   }
   if (buyBtn) {
-    buyBtn.style.display = unlocked ? 'none' : (isRedThemeOwner() ? 'block' : 'none');
+    buyBtn.style.display = unlocked ? 'none' : 'block';
     const points = Math.max(0, Number(getCurrentIPOUser()?.points || 0));
-    buyBtn.disabled = !isRedThemeOwner() || points < 60;
+    buyBtn.disabled = points < 60;
     if (!unlocked) buyBtn.textContent = points >= 60 ? 'شراء الوضع الأحمر بـ 60 نقطة' : `تحتاج ${60 - points} نقطة إضافية`;
   }
   if (activateBtn) {
@@ -229,13 +220,15 @@ function updateRedThemeUI() {
 }
 
 function buyRedThemeFeature() {
-  const user = getCurrentIPOUser();
-  if (!isVerifiedOwner(user)) {
-    alert('هذه الميزة متاحة لصاحب التطبيق فقط.');
+  if (localStorage.getItem('ipo_logged_in') !== 'true') {
+    alert('سجل الدخول أولاً حتى تتمكن من شراء الميزة.');
+    openAuthPage(true);
     return;
   }
+  const user = buildIPOProfileUser();
   if (user.redThemeUnlocked) {
     updateRedThemeUI();
+    toggleRedTheme();
     return;
   }
   const points = Math.max(0, Number(user.points) || 0);
@@ -245,10 +238,12 @@ function buyRedThemeFeature() {
   }
   user.points = points - 60;
   user.redThemeUnlocked = true;
-  saveCurrentIPOUser(user);
-  updatePointsUI(user.points);
+  const saved = syncIPOUserEverywhere(user);
+  if (!saved) return;
+  updatePointsUI(saved.points);
   updateRedThemeUI();
-  alert('تم شراء الوضع الأحمر بنجاح. يمكنك الآن تفعيله أو إيقافه من جانب زر الوضع الداكن/الفاتح.');
+  toggleRedTheme();
+  alert('تم شراء الخلفية الحمراء وتفعيلها بنجاح ✓');
 }
 
 function toggleRedTheme() {
@@ -394,20 +389,27 @@ function awardSessionPoints() {
   const user = getCurrentIPOUser();
   const email = String(user.email || '').trim().toLowerCase();
   if (!email) return;
-  const key = `ipo_points_session_${email}`;
+
+  // مكافأة واحدة كل 24 ساعة لكل حساب، وليس في كل جلسة/فتح للتطبيق.
+  const key = `ipo_points_last_reward_${email}`;
+  const now = Date.now();
+  const lastReward = Number(localStorage.getItem(key) || 0);
+  const DAY_MS = 24 * 60 * 60 * 1000;
+
   try {
-    if (sessionStorage.getItem(key) === '1') {
+    if (lastReward > 0 && (now - lastReward) < DAY_MS) {
       updatePointsUI(user.points || 0);
       return;
     }
+
     const next = { ...user, points: Math.max(0, Number(user.points) || 0) + 7 };
     const saved = syncIPOUserEverywhere(next);
     if (saved) {
-      sessionStorage.setItem(key, '1');
+      localStorage.setItem(key, String(now));
       updatePointsUI(saved.points);
     }
   } catch (error) {
-    console.warn('IPO TV points session reward error:', error);
+    console.warn('IPO TV daily points reward error:', error);
   }
 }
 
@@ -1148,8 +1150,6 @@ window.onload = function() {
   restoreThemeState();
   if (!window.location.hash) history.replaceState({ tab: 'home' }, '', '#home');
 
-  const splash = document.getElementById('app-splash');
-  if (splash) setTimeout(() => splash.classList.add('is-hidden'), 1300);
 };
 function saveCurrentIPOUser(user) {
   return syncIPOUserEverywhere(user);
