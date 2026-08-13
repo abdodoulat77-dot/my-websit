@@ -38,6 +38,51 @@
   --btn-text: #ffffff;
 }
 
+[data-theme="red"] {
+  --bg-gradient-1: #150608;
+  --bg-gradient-2: #2b0b10;
+  --container-bg: #120608;
+  --text-primary: #fff7f7;
+  --text-secondary: #d9b8bc;
+  --card-bg: #241014;
+  --card-border: #5b2028;
+  --accent-color: #ef4444;
+  --accent-hover: #dc2626;
+  --shadow-color: rgba(0, 0, 0, 0.38);
+  --header-bg: #100407;
+  --header-text: #fff7f7;
+  --input-bg: #1b0a0e;
+  --input-border: #6b2832;
+  --input-text: #fff7f7;
+  --btn-text: #ffffff;
+}
+
+[data-theme="red"] body,
+[data-theme="red"] html {
+  background: #120608;
+}
+
+[data-theme="red"] .app-container {
+  background: radial-gradient(circle at top right, rgba(239,68,68,.10), transparent 34%),
+              linear-gradient(145deg, #120608 0%, #1b080c 48%, #090305 100%);
+}
+
+[data-theme="red"] header {
+  background: linear-gradient(135deg, #21070b, #0d0305);
+}
+
+[data-theme="red"] .menu-card,
+[data-theme="red"] .card,
+[data-theme="red"] .points-page-card,
+[data-theme="red"] .profile-card {
+  box-shadow: 0 16px 42px rgba(0,0,0,.28), 0 0 0 1px rgba(239,68,68,.04);
+}
+
+[data-theme="red"] .accent-theme-btn,
+[data-theme="red"] .theme-toggle-pill {
+  border-color: rgba(239,68,68,.45);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -2062,3 +2107,294 @@ main {
 
 .public-profile-team-icon { overflow:hidden; }
 .public-profile-team-icon img { width:28px; height:28px; object-fit:contain; display:block; }
+
+/* =====================================================
+   جدول الدوري الإنجليزي الممتاز - تصميم مخصص من المستخدم
+   ===================================================== */
+.epl-standings-shell {
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px var(--shadow-color);
+}
+
+.epl-standings-header {
+  background: var(--accent-color);
+  color: #fff;
+  padding: 13px 16px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: 900;
+}
+
+.epl-standings-table-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.epl-standings-table {
+  width: 100%;
+  min-width: 520px;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+.epl-standings-table th,
+.epl-standings-table td {
+  padding: 10px 9px;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.epl-standings-table th {
+  background: rgba(0, 0, 0, 0.12);
+  font-size: 11px;
+  color: var(--text-secondary);
+  font-weight: 800;
+}
+
+.epl-standings-table tbody tr {
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.epl-standings-table tbody tr:hover {
+  background: rgba(59, 130, 246, 0.08);
+}
+
+.epl-standings-table td:nth-child(2) {
+  text-align: right;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.epl-rank {
+  font-weight: 900;
+  color: #38bdf8;
+}
+
+.epl-points {
+  font-weight: 900;
+  color: #4ade80;
+}
+
+.epl-abbr {
+  color: var(--text-secondary);
+  font-size: 10px;
+  margin-right: 3px;
+}
+
+@media (max-width: 520px) {
+  .epl-standings-header {
+    font-size: 14px;
+    padding: 11px 12px;
+  }
+
+  .epl-standings-table {
+    min-width: 470px;
+  }
+
+  .epl-standings-table th,
+  .epl-standings-table td {
+    padding: 9px 7px;
+    font-size: 10px;
+  }
+
+  .epl-abbr {
+    font-size: 9px;
+  }
+}
+
+/* معلومات التحديث لجدول جميع الدوريات الكبرى */
+.epl-standings-meta {
+  padding: 8px 12px;
+  font-size: 10px;
+  color: var(--text-secondary);
+  text-align: center;
+  border-bottom: 1px solid var(--card-border);
+  background: rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] .epl-standings-meta {
+  background: rgba(255, 255, 255, 0.025);
+}
+
+@media (max-width: 520px) {
+  .epl-standings-meta {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+}
+
+/* ضبط شعارات الأندية داخل جدول الترتيب: حجم ثابت ومتناسق */
+.major-league-table .standings-team-cell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 9px;
+  min-width: 0;
+  width: 100%;
+}
+
+.major-league-table .standings-team-logo-wrap {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  max-width: 32px;
+  flex: 0 0 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 9px;
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--card-border);
+}
+
+.major-league-table .standings-team-logo-wrap img {
+  display: block !important;
+  width: 24px !important;
+  height: 24px !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  max-width: 24px !important;
+  max-height: 24px !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  flex: 0 0 24px;
+}
+
+.major-league-table .standings-team-fallback {
+  width: 24px;
+  height: 24px;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 1;
+}
+
+.major-league-table .standings-team-name {
+  display: block;
+  min-width: 0;
+  max-width: 170px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+@media (max-width: 520px) {
+  .major-league-table .standings-team-logo-wrap {
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    max-width: 28px;
+    flex-basis: 28px;
+    border-radius: 8px;
+  }
+
+  .major-league-table .standings-team-logo-wrap img,
+  .major-league-table .standings-team-fallback {
+    width: 21px !important;
+    height: 21px !important;
+    min-width: 21px !important;
+    min-height: 21px !important;
+    max-width: 21px !important;
+    max-height: 21px !important;
+    flex-basis: 21px;
+  }
+
+  .major-league-table .standings-team-name {
+    max-width: 125px;
+    font-size: 10px;
+  }
+}
+
+
+/* ===== IPO TV POINTS SYSTEM ===== */
+.points-pill {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 92px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid rgba(250,204,21,.38);
+  border-radius: 12px;
+  color: #fef9c3;
+  background: linear-gradient(145deg, rgba(250,204,21,.22), rgba(245,158,11,.08));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.13), 0 7px 18px rgba(245,158,11,.15);
+  cursor: pointer;
+  font: 800 11px 'Cairo', sans-serif;
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+.points-pill:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,255,255,.15), 0 10px 24px rgba(245,158,11,.22); }
+.points-pill:active { transform: translateY(1px) scale(.98); }
+.points-pill-star { font-size: 14px; color: #facc15; line-height: 1; text-shadow: 0 0 10px rgba(250,204,21,.65); }
+.points-pill-label { opacity: .82; }
+
+.points-page-card { width: min(760px, 100%); margin: 0 auto; padding: 10px 0 30px; }
+.points-hero { display:flex; align-items:center; gap:14px; padding:22px; margin-bottom:14px; border:1px solid var(--card-border); border-radius:22px; background:linear-gradient(135deg, var(--card-bg), var(--input-bg)); box-shadow:0 18px 45px var(--shadow-color); }
+.points-hero-icon { width:54px; height:54px; flex:0 0 54px; display:grid; place-items:center; border-radius:18px; background:linear-gradient(145deg,#facc15,#f59e0b); color:#fff; font-size:28px; box-shadow:inset 0 2px 0 rgba(255,255,255,.28), 0 12px 28px rgba(245,158,11,.28); }
+.points-hero h2 { margin:0 0 4px; color:var(--text-primary); font-size:21px; font-weight:900; }
+.points-hero p { margin:0; color:var(--text-secondary); font-size:11px; line-height:1.7; }
+.points-balance-card { display:flex; align-items:baseline; justify-content:center; gap:10px; padding:26px; border-radius:22px; background:linear-gradient(135deg,#1d4ed8,#2563eb 55%,#3b82f6); color:#fff; box-shadow:0 20px 44px rgba(37,99,235,.25); margin-bottom:14px; }
+.points-balance-card strong { font-size:42px; line-height:1; font-weight:900; text-shadow:0 5px 16px rgba(0,0,0,.18); }
+.points-balance-label { font-size:12px; opacity:.88; }
+.points-reward-card, .points-shop-card { border:1px solid var(--card-border); border-radius:20px; background:var(--card-bg); padding:18px; box-shadow:0 16px 36px var(--shadow-color); margin-bottom:14px; }
+.points-reward-card { display:flex; align-items:center; gap:14px; }
+.points-reward-icon { width:56px; height:56px; flex:0 0 56px; border-radius:16px; display:grid; place-items:center; background:rgba(34,197,94,.12); color:#22c55e; font-size:20px; font-weight:900; }
+.points-reward-card strong, .points-shop-card h3 { color:var(--text-primary); }
+.points-reward-card p, .points-shop-card p { margin:4px 0 0; color:var(--text-secondary); font-size:11px; line-height:1.7; }
+.points-shop-top { display:flex; justify-content:space-between; gap:14px; align-items:flex-start; }
+.points-shop-kicker { display:block; color:var(--accent-color); font-size:10px; font-weight:900; margin-bottom:4px; }
+.points-shop-card h3 { margin:0; font-size:16px; }
+.points-price-badge { min-width:72px; padding:9px 10px; border-radius:14px; background:rgba(250,204,21,.12); color:#f59e0b; text-align:center; border:1px solid rgba(250,204,21,.22); }
+.points-price-badge strong { display:block; font-size:20px; }
+.points-price-badge span { font-size:9px; }
+.points-shop-status { margin-top:14px; padding:10px 12px; border-radius:12px; background:var(--input-bg); color:var(--text-secondary); font-size:11px; text-align:center; }
+.points-shop-status.is-active { background:rgba(34,197,94,.11); color:#16a34a; border:1px solid rgba(34,197,94,.18); }
+.points-buy-btn, .profile-points-main-btn { border:0; cursor:pointer; font:800 12px 'Cairo',sans-serif; transition:.22s; }
+.points-buy-btn { width:100%; margin-top:10px; padding:12px 14px; border-radius:13px; color:#fff; background:linear-gradient(135deg,#2563eb,#7c3aed); box-shadow:0 10px 24px rgba(37,99,235,.18); }
+.points-buy-btn:hover:not(:disabled) { transform:translateY(-2px); box-shadow:0 13px 28px rgba(37,99,235,.26); }
+.points-buy-btn:disabled { cursor:not-allowed; opacity:.62; box-shadow:none; }
+.profile-points-main-btn { display:inline-flex; align-items:center; justify-content:center; gap:7px; width:min(190px, 80%); margin-top:8px; padding:10px 16px; border-radius:13px; color:#fff; background:linear-gradient(135deg,#f59e0b,#eab308); box-shadow:0 9px 20px rgba(245,158,11,.18); }
+.profile-points-main-btn:hover { transform:translateY(-2px); }
+
+/* Small, centered favorite-team display outside editor */
+.profile-centered-info .profile-team-card,
+.profile-centered-info .profile-team-readonly { width:min(100%, 300px); padding:9px 11px; border-radius:13px; gap:9px; cursor:default; }
+.profile-centered-info .profile-team-card:hover,
+.profile-centered-info .profile-team-readonly:hover { transform:none; box-shadow:none; }
+.profile-centered-info .profile-team-icon { width:34px; height:34px; flex-basis:34px; border-radius:10px; box-shadow:none; }
+.profile-centered-info .profile-team-icon img { width:24px; height:24px; }
+.profile-centered-info .profile-team-copy { align-items:center; }
+.profile-centered-info .profile-team-copy span { font-size:8px; }
+.profile-centered-info .profile-team-copy strong { font-size:11px; max-width:200px; }
+@media (max-width:520px) {
+  .points-pill { min-width:70px; height:32px; padding:0 8px; gap:4px; font-size:9px; }
+  .points-pill-label { display:none; }
+  .points-hero { padding:17px; }
+  .points-balance-card { padding:23px 16px; }
+  .points-balance-card strong { font-size:36px; }
+  .profile-points-main-btn { width:min(210px, 86%); }
+}
+
+/* Light-mode readability fix for the points badge in the header */
+[data-theme="light"] .points-pill {
+  color: #172033 !important;
+  background: linear-gradient(145deg, #ffffff, #eef2f7) !important;
+  border-color: rgba(71, 85, 105, 0.22) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.95), 0 7px 18px rgba(15,23,42,.10) !important;
+}
+[data-theme="light"] .points-pill-label {
+  color: #475569 !important;
+  opacity: 1 !important;
+}
+[data-theme="light"] .points-pill-star {
+  color: #d97706 !important;
+  text-shadow: 0 0 8px rgba(217,119,6,.20) !important;
+}

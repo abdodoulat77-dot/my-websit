@@ -67,6 +67,14 @@
       <button class="theme-toggle-pill" onclick="toggleTheme()">
         <span class="theme-icon" id="theme-icon-symbol">🌙</span> <span id="theme-text">الوضع الداكن</span>
       </button>
+      <button type="button" id="owner-red-theme-btn" class="accent-theme-btn" onclick="toggleRedTheme()" style="display:none;" title="تفعيل الوضع الأحمر">
+        <span>🔴</span><span>الوضع الأحمر</span>
+      </button>
+            <button type="button" class="points-pill" id="header-points-pill" onclick="openPointsPage()" title="نقاطي">
+        <span class="points-pill-star">★</span>
+        <span id="header-points-value">0</span>
+        <span class="points-pill-label">نقطة</span>
+      </button>
       
       <!-- صورة البروفيل المصغرة -->
       <div onclick="openAuthPage()" class="header-profile-wrapper" title="حسابي / الملف الشخصي">
@@ -210,6 +218,60 @@
     </div>
 
     <!-- صفحة الملف العام -->
+    <div id="tab-points" class="tab-content">
+      <div class="back-nav">
+        <button class="back-btn" onclick="goBack()"><span class="back-icon-shape"></span> رجوع للخلف</button>
+      </div>
+      <section class="points-page-card">
+        <div class="points-hero">
+          <div class="points-hero-icon">★</div>
+          <div>
+            <h2>نقاطي</h2>
+            <p>اجمع النقاط مع كل دخول للتطبيق واستخدمها لفتح المزايا.</p>
+          </div>
+        </div>
+
+        <div class="points-balance-card">
+          <span class="points-balance-label">رصيدك الحالي</span>
+          <strong id="points-page-value">0</strong>
+          <span>نقطة</span>
+        </div>
+
+        <div class="points-reward-card">
+          <div class="points-reward-icon">+7</div>
+          <div>
+            <strong>مكافأة الدخول</strong>
+            <p>تحصل على 7 نقاط مرة واحدة عند دخولك للتطبيق في كل جلسة جديدة.</p>
+          </div>
+        </div>
+
+        <div class="points-shop-card">
+          <div class="points-shop-top">
+            <div>
+              <span class="points-shop-kicker">متجر المزايا</span>
+              <h3>صورة بروفايل متحركة GIF</h3>
+              <p>فعّل إمكانية استخدام صورة GIF متحركة في ملفك الشخصي.</p>
+            </div>
+            <div class="points-price-badge"><strong>300</strong><span>نقطة</span></div>
+          </div>
+          <div class="points-shop-status" id="gif-feature-status">الميزة غير مفعّلة</div>
+          <button type="button" class="points-buy-btn" id="gif-feature-buy-btn" onclick="buyAnimatedAvatarFeature()">شراء الميزة بـ 300 نقطة</button>
+          <div class="points-shop-item red-theme-feature">
+            <div class="points-shop-icon">🔴</div>
+            <div class="points-shop-info">
+              <strong>الوضع الأحمر</strong>
+              <span>خلفية حمراء مع لمسات سوداء — متاح لصاحب التطبيق فقط.</span>
+            </div>
+            <div class="points-price">60 نقطة</div>
+          </div>
+          <div class="points-shop-actions">
+            <button type="button" class="points-buy-btn" id="red-theme-buy-btn" onclick="buyRedThemeFeature()">شراء الوضع الأحمر بـ 60 نقطة</button>
+            <button type="button" class="points-buy-btn secondary" id="red-theme-activate-btn" onclick="toggleRedTheme()" style="display:none;">تفعيل الوضع الأحمر</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
     <div id="tab-public-profile" class="tab-content">
       <div class="back-nav">
         <button class="back-btn" onclick="goBack()"><span class="back-icon-shape"></span> رجوع للخلف</button>
@@ -322,6 +384,7 @@
               <div class="vip-coming-notice" role="note">✨ سيتم توفير ميزة VIP قريبًا</div>
 
               <button type="button" class="profile-edit-main-btn profile-edit-main-btn-centered" onclick="openProfileEditor()">تعديل ملف</button>
+              <button type="button" class="profile-points-main-btn" onclick="openPointsPage()"><span>★</span> نقاطي</button>
             </div>
           </div>
         </section>
@@ -348,7 +411,7 @@
               <img id="profile-editor-avatar-preview" src="" alt="معاينة الصورة">
               <label class="editor-avatar-btn" for="profile-avatar-editor-input">📷</label>
               <input id="profile-avatar-editor-input" type="file" accept="image/*,.gif" hidden onchange="handleProfileAvatarDraft(event)">
-              <small class="profile-gif-note">GIF متحرك متاح للحساب الموثق فقط.</small>
+              <small class="profile-gif-note">GIF متحرك متاح بعد شراء الميزة بـ300 نقطة. الحساب الموثق يحصل عليه تلقائيًا.</small>
             </div>
 
             <div class="profile-editor-fields">

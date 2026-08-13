@@ -2,6 +2,8 @@ const logoDark = "https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg";
 const logoLight = "https://i.ibb.co/Xk4sF9Pp/6014807209780383184-121.jpg";
 
 let isNavigatingBySystem = false;
+let ipoProfileEditorOpen = false;
+let ipoProfileDraft = null;
 
 // قائمة الأندية العالمية حصرياً مع خيار "محايد"
 const globalTeamsList = [
@@ -171,16 +173,107 @@ function openAuthPage(pushState = true) {
 
 function toggleTheme() {
   const htmlEl = document.documentElement;
-  const currentTheme = htmlEl.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  const currentTheme = htmlEl.getAttribute('data-theme') || 'dark';
+  const baseTheme = currentTheme === 'red' ? (localStorage.getItem('ipo_theme_base') || 'dark') : currentTheme;
+  const newTheme = baseTheme === 'light' ? 'dark' : 'light';
   htmlEl.setAttribute('data-theme', newTheme);
-  try { localStorage.setItem('ipo_theme', newTheme); } catch (e) {}
-  const textEl = document.getElementById('theme-text');
-  const iconEl = document.getElementById('theme-icon-symbol');
-  if (textEl) textEl.textContent = newTheme === 'light' ? 'الوضع الفاتح' : 'الوضع الداكن';
-  if (iconEl) iconEl.textContent = newTheme === 'light' ? '☀️' : '🌙';
-  const appLogoImg = document.getElementById('header-app-logo');
-  if (appLogoImg) appLogoImg.src = newTheme === 'light' ? logoLight : logoDark;
+  try {
+    localStorage.setItem('ipo_theme', newTheme);
+    localStorage.setItem('ipo_theme_base', newTheme);
+  } catch (e) {}
+  updateThemeButtonUI();
+  updateHeaderAppLogo(newTheme);
+  updateRedThemeUI();
+}
+
+
+function isRedThemeOwner() {
+  try {
+    const user = getCurrentIPOUser();
+    return isVerifiedOwner(user);
+  } catch (e) {
+    return false;
+  }
+}
+
+function isRedThemeUnlocked() {
+  try {
+    const user = getCurrentIPOUser();
+    return isRedThemeOwner() && Boolean(user.redThemeUnlocked);
+  } catch (e) {
+    return false;
+  }
+}
+
+function updateRedThemeUI() {
+  const headerBtn = document.getElementById('owner-red-theme-btn');
+  const buyBtn = document.getElementById('red-theme-buy-btn');
+  const activateBtn = document.getElementById('red-theme-activate-btn');
+  const unlocked = isRedThemeUnlocked();
+  const active = document.documentElement.getAttribute('data-theme') === 'red';
+
+  if (headerBtn) {
+    headerBtn.style.display = unlocked ? 'inline-flex' : 'none';
+    headerBtn.querySelector('span:last-child').textContent = active ? 'الوضع الأحمر ✓' : 'الوضع الأحمر';
+  }
+  if (buyBtn) {
+    buyBtn.style.display = unlocked ? 'none' : (isRedThemeOwner() ? 'block' : 'none');
+    const points = Math.max(0, Number(getCurrentIPOUser()?.points || 0));
+    buyBtn.disabled = !isRedThemeOwner() || points < 60;
+    if (!unlocked) buyBtn.textContent = points >= 60 ? 'شراء الوضع الأحمر بـ 60 نقطة' : `تحتاج ${60 - points} نقطة إضافية`;
+  }
+  if (activateBtn) {
+    activateBtn.style.display = unlocked ? 'block' : 'none';
+    activateBtn.textContent = active ? 'إيقاف الوضع الأحمر' : 'تفعيل الوضع الأحمر';
+  }
+}
+
+function buyRedThemeFeature() {
+  const user = getCurrentIPOUser();
+  if (!isVerifiedOwner(user)) {
+    alert('هذه الميزة متاحة لصاحب التطبيق فقط.');
+    return;
+  }
+  if (user.redThemeUnlocked) {
+    updateRedThemeUI();
+    return;
+  }
+  const points = Math.max(0, Number(user.points) || 0);
+  if (points < 60) {
+    alert(`لا تملك نقاطًا كافية. تحتاج ${60 - points} نقطة إضافية.`);
+    return;
+  }
+  user.points = points - 60;
+  user.redThemeUnlocked = true;
+  saveCurrentIPOUser(user);
+  updatePointsUI(user.points);
+  updateRedThemeUI();
+  alert('تم شراء الوضع الأحمر بنجاح. يمكنك الآن تفعيله أو إيقافه من جانب زر الوضع الداكن/الفاتح.');
+}
+
+function toggleRedTheme() {
+  if (!isRedThemeUnlocked()) {
+    alert('الوضع الأحمر غير متاح قبل شرائه بـ60 نقطة.');
+    return;
+  }
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current === 'red' ? (localStorage.getItem('ipo_theme_base') || 'dark') : 'red';
+  document.documentElement.setAttribute('data-theme', next);
+  try {
+    localStorage.setItem('ipo_theme', next);
+    if (next !== 'red') localStorage.setItem('ipo_theme_base', next);
+  } catch (e) {}
+  updateThemeButtonUI();
+  updateRedThemeUI();
+}
+
+function updateThemeButtonUI() {
+  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const icon = document.getElementById('theme-icon-symbol');
+  const text = document.getElementById('theme-text');
+  if (theme === 'light') { if(icon) icon.textContent='☀️'; if(text) text.textContent='الوضع الفاتح'; }
+  else if (theme === 'red') { if(icon) icon.textContent='🔴'; if(text) text.textContent='الوضع الأحمر'; }
+  else { if(icon) icon.textContent='🌙'; if(text) text.textContent='الوضع الداكن'; }
 }
 
 function toggleAuthMode(mode) {
@@ -237,7 +330,10 @@ function registerUserAccount() {
     cover: "",
     bio: "",
     favTeamName: "",
-    favTeamLogo: ""
+    favTeamLogo: "",
+    points: 0,
+    animatedAvatarUnlocked: false,
+    redThemeUnlocked: false
   };
 
   usersList.push(newUserData);
@@ -272,6 +368,86 @@ function verifyLogin() {
   }
 }
 
+
+function updatePointsUI(points) {
+  const safePoints = Math.max(0, Number.isFinite(Number(points)) ? Math.floor(Number(points)) : 0);
+  const headerValue = document.getElementById('header-points-value');
+  const pageValue = document.getElementById('points-page-value');
+  if (headerValue) headerValue.textContent = safePoints.toLocaleString('ar-DZ');
+  if (pageValue) pageValue.textContent = safePoints.toLocaleString('ar-DZ');
+  const buyBtn = document.getElementById('gif-feature-buy-btn');
+  const status = document.getElementById('gif-feature-status');
+  const user = getCurrentIPOUser();
+  const unlocked = isVerifiedOwner(user) || Boolean(user.animatedAvatarUnlocked);
+  if (status) {
+    status.textContent = unlocked ? '✓ الميزة مفعّلة في حسابك' : `تحتاج 300 نقطة — رصيدك ${safePoints} نقطة`;
+    status.classList.toggle('is-active', unlocked);
+  }
+  if (buyBtn) {
+    buyBtn.disabled = unlocked || safePoints < 300;
+    buyBtn.textContent = unlocked ? 'الميزة مفعّلة ✓' : (safePoints >= 300 ? 'شراء الميزة بـ 300 نقطة' : `تحتاج ${Math.max(0, 300 - safePoints)} نقطة إضافية`);
+  }
+}
+
+function awardSessionPoints() {
+  if (localStorage.getItem('ipo_logged_in') !== 'true') return;
+  const user = getCurrentIPOUser();
+  const email = String(user.email || '').trim().toLowerCase();
+  if (!email) return;
+  const key = `ipo_points_session_${email}`;
+  try {
+    if (sessionStorage.getItem(key) === '1') {
+      updatePointsUI(user.points || 0);
+      return;
+    }
+    const next = { ...user, points: Math.max(0, Number(user.points) || 0) + 7 };
+    const saved = syncIPOUserEverywhere(next);
+    if (saved) {
+      sessionStorage.setItem(key, '1');
+      updatePointsUI(saved.points);
+    }
+  } catch (error) {
+    console.warn('IPO TV points session reward error:', error);
+  }
+}
+
+function openPointsPage(pushState = true) {
+  if (localStorage.getItem('ipo_logged_in') !== 'true') {
+    alert('سجل الدخول أولاً حتى تتمكن من استخدام نقاطك.');
+    openAuthPage(true);
+    return;
+  }
+  const user = buildIPOProfileUser();
+  updatePointsUI(user.points || 0);
+  switchPage('points', 'نقاطي', pushState);
+}
+
+function buyAnimatedAvatarFeature() {
+  if (localStorage.getItem('ipo_logged_in') !== 'true') {
+    alert('سجل الدخول أولاً.');
+    return;
+  }
+  let user = buildIPOProfileUser();
+  if (isVerifiedOwner(user) || user.animatedAvatarUnlocked) {
+    alert('ميزة GIF مفعّلة بالفعل في حسابك.');
+    updatePointsUI(user.points || 0);
+    return;
+  }
+  const points = Math.max(0, Number(user.points) || 0);
+  if (points < 300) {
+    alert(`لا تملك نقاطًا كافية. تحتاج ${300 - points} نقطة إضافية.`);
+    return;
+  }
+  user.points = points - 300;
+  user.animatedAvatarUnlocked = true;
+  const saved = syncIPOUserEverywhere(user);
+  if (!saved) return;
+  updatePointsUI(saved.points);
+  const note = document.querySelector('.profile-gif-note');
+  if (note) note.textContent = '✓ ميزة GIF المتحركة مفعّلة في حسابك.';
+  alert('تم شراء ميزة الصورة المتحركة GIF بنجاح ✓');
+}
+
 function checkUserSession() {
   const isLoggedIn = localStorage.getItem('ipo_logged_in') === 'true';
   const regForm = document.getElementById('form-register');
@@ -280,6 +456,7 @@ function checkUserSession() {
   const mainTitle = document.getElementById('auth-main-title');
 
   if (isLoggedIn) {
+    awardSessionPoints();
     if (regForm) regForm.style.display = 'none';
     if (loginForm) loginForm.style.display = 'none';
     if (profileContainer) profileContainer.style.display = 'block';
@@ -288,6 +465,7 @@ function checkUserSession() {
     const user = buildIPOProfileUser();
     applyIPOProfileUser(user);
   } else {
+    updatePointsUI(0);
     if (profileContainer) profileContainer.style.display = 'none';
     if (regForm) regForm.style.display = 'block';
     if (loginForm) loginForm.style.display = 'none';
@@ -491,94 +669,492 @@ function logoutAccount() {
   switchPage('home', 'IPO TV');
 }
 
+let eplStandingsRefreshTimer = null;
+let eplStandingsLastUpdated = null;
+
+// ================================================================
+// نظام ترتيب الدوريات الكبرى - تحديث تلقائي لكل الدوريات
+// ================================================================
+
+const STATIC_LEAGUE_LOGOS = {
+  "England - Premier League": {
+    "Arsenal": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Arsenal%20FC.png",
+    "Aston Villa": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Aston%20Villa.png",
+    "Bournemouth": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/AFC%20Bournemouth.png",
+    "Brentford": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Brentford%20FC.png",
+    "Brighton": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Brighton%20%26%20Hove%20Albion.png",
+    "Chelsea": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Chelsea%20FC.png",
+    "Crystal Palace": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Crystal%20Palace.png",
+    "Everton": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Everton%20FC.png",
+    "Fulham": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Fulham%20FC.png",
+    "Leeds United": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Leeds%20United.png",
+    "Liverpool": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Liverpool%20FC.png",
+    "Manchester City": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Manchester%20City.png",
+    "Manchester United": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Manchester%20United.png",
+    "Newcastle United": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Newcastle%20United.png",
+    "Nottingham Forest": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Nottingham%20Forest.png",
+    "Sunderland": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Sunderland%20AFC.png",
+    "Tottenham Hotspur": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Tottenham%20Hotspur.png",
+    "Coventry City": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Coventry%20City.png",
+    "Ipswich Town": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Ipswich%20Town.png",
+    "Hull City": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/England%20-%20Premier%20League/Hull%20City.png"
+  },
+  "Spain - LaLiga": {
+    "Athletic Club": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Athletic%20Bilbao.png",
+    "Atletico Madrid": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Atl%C3%A9tico%20de%20Madrid.png",
+    "Osasuna": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/CA%20Osasuna.png",
+    "Celta Vigo": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Celta%20de%20Vigo.png",
+    "Deportivo Alaves": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Deportivo%20Alav%C3%A9s.png",
+    "Elche": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Elche%20CF.png",
+    "Barcelona": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/FC%20Barcelona.png",
+    "Getafe": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Getafe%20CF.png",
+    "Levante": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Levante%20UD.png",
+    "Malaga": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/M%C3%A1laga%20CF.png",
+    "Racing Santander": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Racing%20Santander.png",
+    "Rayo Vallecano": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Rayo%20Vallecano.png",
+    "Deportivo La Coruna": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Deportivo%20A%20Coru%C3%B1a.png",
+    "Espanyol": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/RCD%20Espanyol%20Barcelona.png",
+    "Real Betis": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Real%20Betis%20Balompi%C3%A9.png",
+    "Real Madrid": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Real%20Madrid.png",
+    "Real Sociedad": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Real%20Sociedad.png",
+    "Sevilla": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Sevilla%20FC.png",
+    "Valencia": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Valencia%20CF.png",
+    "Villarreal": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Spain%20-%20LaLiga/Villarreal%20CF.png"
+  },
+  "Italy - Serie A": {
+    "AC Milan": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/AC%20Milan.png",
+    "Atalanta": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Atalanta%20BC.png",
+    "Bologna": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Bologna%20FC%201909.png",
+    "Cagliari": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Cagliari%20Calcio.png",
+    "Como": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Como%201907.png",
+    "Fiorentina": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/ACF%20Fiorentina.png",
+    "Frosinone": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Frosinone%20Calcio.png",
+    "Genoa": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Genoa%20CFC.png",
+    "Inter": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Inter%20Milan.png",
+    "Juventus": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Juventus%20FC.png",
+    "Lazio": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/SS%20Lazio.png",
+    "Lecce": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/US%20Lecce.png",
+    "Monza": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/AC%20Monza.png",
+    "Napoli": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/SSC%20Napoli.png",
+    "Parma": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Parma%20Calcio%201913.png",
+    "Roma": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/AS%20Roma.png",
+    "Sassuolo": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/US%20Sassuolo.png",
+    "Torino": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Torino%20FC.png",
+    "Udinese": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Udinese%20Calcio.png",
+    "Venezia": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Italy%20-%20Serie%20A/Venezia%20FC.png"
+  },
+  "Germany - Bundesliga": {
+    "Bayern Munich": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/Bayern%20Munich.png",
+    "Borussia Dortmund": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/Borussia%20Dortmund.png",
+    "RB Leipzig": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/RB%20Leipzig.png",
+    "VfB Stuttgart": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/VfB%20Stuttgart.png",
+    "Hoffenheim": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/TSG%201899%20Hoffenheim.png",
+    "Bayer Leverkusen": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/Bayer%2004%20Leverkusen.png",
+    "Freiburg": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/SC%20Freiburg.png",
+    "Eintracht Frankfurt": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/Eintracht%20Frankfurt.png",
+    "Augsburg": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/FC%20Augsburg.png",
+    "Mainz": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/1.FSV%20Mainz%2005.png",
+    "Union Berlin": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/1.FC%20Union%20Berlin.png",
+    "Borussia M'gladbach": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/Borussia%20M%C3%B6nchengladbach.png",
+    "Hamburg": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/Hamburger%20SV.png",
+    "Cologne": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/1.FC%20K%C3%B6ln.png",
+    "Werder Bremen": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/SV%20Werder%20Bremen.png",
+    "Schalke 04": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/FC%20Schalke%2004.png",
+    "Elversberg": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/SV%2007%20Elversberg.png",
+    "Paderborn": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/Germany%20-%20Bundesliga/SC%20Paderborn%2007.png"
+  },
+  "France - Ligue 1": {
+    "Angers": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Angers%20SCO.png",
+    "Auxerre": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/AJ%20Auxerre.png",
+    "Brest": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Stade%20Brestois%2029.png",
+    "Le Havre": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Le%20Havre%20AC.png",
+    "Le Mans": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Le%20Mans%20FC.png",
+    "Lens": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/RC%20Lens.png",
+    "Lille": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/LOSC%20Lille.png",
+    "Lorient": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/FC%20Lorient.png",
+    "Lyon": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Olympique%20Lyon.png",
+    "Marseille": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Olympique%20Marseille.png",
+    "Monaco": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/AS%20Monaco.png",
+    "Nice": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/OGC%20Nice.png",
+    "Paris FC": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Paris%20FC.png",
+    "Paris Saint-Germain": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Paris%20Saint-Germain.png",
+    "Rennes": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/Stade%20Rennais%20FC.png",
+    "Strasbourg": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/RC%20Strasbourg%20Alsace.png",
+    "Toulouse": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/FC%20Toulouse.png",
+    "Troyes": "https://raw.githubusercontent.com/luukhopman/football-logos/master/logos/France%20-%20Ligue%201/ESTAC%20Troyes.png"
+  }
+};
+
+const majorLeaguesConfig = {
+  "4328": {
+    name: "الدوري الإنجليزي الممتاز",
+    apiLeagueName: "English Premier League",
+    logoGroup: "England - Premier League",
+    teams: [
+      ["Arsenal", "أرسنال"], ["Aston Villa", "أستون فيلا"], ["Bournemouth", "بورنموث"], ["Brentford", "برينتفورد"],
+      ["Brighton", "برايتون"], ["Chelsea", "تشيلسي"], ["Crystal Palace", "كريستال بالاس"], ["Everton", "إيفرتون"],
+      ["Fulham", "فولهام"], ["Leeds United", "ليدز يونايتد"], ["Liverpool", "ليفربول"], ["Manchester City", "مانشستر سيتي"],
+      ["Manchester United", "مانشستر يونايتد"], ["Newcastle United", "نيوكاسل يونايتد"], ["Nottingham Forest", "نوتنغهام فورست"],
+      ["Sunderland", "سندرلاند"], ["Tottenham Hotspur", "توتنهام هوتسبير"], ["Coventry City", "كوفنتري سيتي"],
+      ["Ipswich Town", "إيبسويتش تاون"], ["Hull City", "هال سيتي"]
+    ]
+  },
+  "4335": {
+    name: "الدوري الإسباني",
+    apiLeagueName: "Spanish La Liga",
+    logoGroup: "Spain - LaLiga",
+    teams: [
+      ["Athletic Club", "أتلتيك بيلباو"], ["Atletico Madrid", "أتلتيكو مدريد"], ["Osasuna", "أوساسونا"], ["Celta Vigo", "سيلتا فيغو"],
+      ["Deportivo Alaves", "ديبورتيفو ألافيس"], ["Elche", "إلتشي"], ["Barcelona", "برشلونة"], ["Getafe", "خيتافي"],
+      ["Levante", "ليفانتي"], ["Malaga", "مالقة"], ["Racing Santander", "راسينغ سانتاندير"], ["Rayo Vallecano", "رايو فاييكانو"],
+      ["Deportivo La Coruna", "ريال ديبورتيفو لاكورونيا"], ["Espanyol", "إسبانيول"], ["Real Betis", "ريال بيتيس"], ["Real Madrid", "ريال مدريد"],
+      ["Real Sociedad", "ريال سوسيداد"], ["Sevilla", "إشبيلية"], ["Valencia", "فالنسيا"], ["Villarreal", "فياريال"]
+    ]
+  },
+  "4332": {
+    name: "الدوري الإيطالي",
+    apiLeagueName: "Italian Serie A",
+    logoGroup: "Italy - Serie A",
+    teams: [
+      ["AC Milan", "إيه سي ميلان"], ["Atalanta", "أتالانتا"], ["Bologna", "بولونيا"], ["Cagliari", "كالياري"],
+      ["Como", "كومو"], ["Fiorentina", "فيورنتينا"], ["Frosinone", "فروزينوني"], ["Genoa", "جنوى"],
+      ["Inter", "إنتر ميلان"], ["Juventus", "يوفنتوس"], ["Lazio", "لاتسيو"], ["Lecce", "ليتشي"],
+      ["Monza", "مونزا"], ["Napoli", "نابولي"], ["Parma", "بارما"], ["Roma", "روما"], ["Sassuolo", "ساسولو"],
+      ["Torino", "تورينو"], ["Udinese", "أودينيزي"], ["Venezia", "فينيتسيا"]
+    ]
+  },
+  "4331": {
+    name: "الدوري الألماني",
+    apiLeagueName: "German Bundesliga",
+    logoGroup: "Germany - Bundesliga",
+    teams: [
+      ["Bayern Munich", "بايرن ميونخ"], ["Borussia Dortmund", "بوروسيا دورتموند"], ["RB Leipzig", "لايبزيغ"], ["VfB Stuttgart", "شتوتغارت"],
+      ["Hoffenheim", "هوفنهايم"], ["Bayer Leverkusen", "باير ليفركوزن"], ["Freiburg", "فرايبورغ"], ["Eintracht Frankfurt", "آينتراخت فرانكفورت"],
+      ["Augsburg", "أوغسبورغ"], ["Mainz", "ماينتس"], ["Union Berlin", "يونيون برلين"], ["Borussia M'gladbach", "بوروسيا مونشنغلادباخ"],
+      ["Hamburg", "هامبورغ"], ["Cologne", "كولن"], ["Werder Bremen", "فيردر بريمن"], ["Schalke 04", "شالكه 04"],
+      ["Elversberg", "إلفرسبرغ"], ["Paderborn", "بادربورن"]
+    ]
+  },
+  "4334": {
+    name: "الدوري الفرنسي",
+    apiLeagueName: "French Ligue 1",
+    logoGroup: "France - Ligue 1",
+    teams: [
+      ["Angers", "أنجيه"], ["Auxerre", "أوكسير"], ["Brest", "ستاد بريست"], ["Le Havre", "لوهافر"], ["Le Mans", "لو مان"],
+      ["Lens", "لانس"], ["Lille", "ليل"], ["Lorient", "لوريان"], ["Lyon", "أولمبيك ليون"], ["Marseille", "أولمبيك مارسيليا"],
+      ["Monaco", "موناكو"], ["Nice", "نيس"], ["Paris FC", "باريس إف سي"], ["Paris Saint-Germain", "باريس سان جيرمان"],
+      ["Rennes", "ستاد رين"], ["Strasbourg", "ستراسبورغ"], ["Toulouse", "تولوز"], ["Troyes", "تروا"]
+    ]
+  }
+};
+
+let leagueStandingsRefreshTimer = null;
+let leagueStandingsVisibilityHandlerAttached = false;
+let activeLeagueDetailsId = null;
+let activeLeagueStandingsContainer = null;
+let activeLeagueStandingsRequestId = 0;
+const leagueStandingsLastUpdated = {};
+const leagueBadgeCache = {};
+
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, char => ({
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  }[char]));
+}
+
+function normalizeName(name) {
+  return String(name || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\b(fc|afc|cf|ac|sc|rc|club|football|fk)\b/g, '')
+    .replace(/\bsaint-germain\b/g, 'paris saint germain')
+    .replace(/\bm['’]gladbach\b/g, 'monchengladbach')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function getLeagueConfig(leagueId, fallbackName = 'الدوري') {
+  return majorLeaguesConfig[String(leagueId)] || { name: fallbackName, apiLeagueName: '', teams: [] };
+}
+
+function buildStaticRows(config) {
+  const logoGroup = STATIC_LEAGUE_LOGOS[config.logoGroup] || {};
+  return config.teams.map((team, index) => ({
+    rank: index + 1,
+    apiName: team[0],
+    teamName: team[1],
+    played: 0,
+    wins: 0,
+    draws: 0,
+    losses: 0,
+    points: 0,
+    goalsFor: 0,
+    goalsAgainst: 0,
+    badge: logoGroup[team[0]] || ''
+  }));
+}
+
+function normalizeLiveRows(tableData) {
+  if (!Array.isArray(tableData)) return [];
+  return tableData.map((item, index) => ({
+    rank: Number(item.intRank ?? item.rank ?? item.position ?? (index + 1)),
+    rawName: item.strTeam ?? item.team_name ?? item.name ?? '',
+    played: Number(item.intPlayed ?? item.played ?? item.games ?? 0),
+    wins: Number(item.intWin ?? item.won ?? item.wins ?? 0),
+    draws: Number(item.intDraw ?? item.draw ?? item.draws ?? 0),
+    losses: Number(item.intLoss ?? item.lost ?? item.losses ?? 0),
+    points: Number(item.intPoints ?? item.points ?? 0),
+    goalsFor: Number(item.intGoalsFor ?? item.goals_for ?? item.for ?? 0),
+    goalsAgainst: Number(item.intGoalsAgainst ?? item.goals_against ?? item.against ?? 0),
+    badge: item.strTeamBadge ?? item.logo ?? item.badge ?? ''
+  }));
+}
+
+async function fetchLeagueBadges(config) {
+  const key = config.apiLeagueName;
+  if (leagueBadgeCache[key]) return leagueBadgeCache[key];
+
+  try {
+    const url = `https://www.thesportsdb.com/api/v1/json/3/search_all_teams.php?l=${encodeURIComponent(config.apiLeagueName)}`;
+    const response = await fetch(url, { cache: 'no-store', headers: { 'Accept': 'application/json' } });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    const teams = Array.isArray(data.teams) ? data.teams : [];
+    const map = {};
+    teams.forEach(team => {
+      const normalized = normalizeName(team.strTeam);
+      if (normalized && !map[normalized]) {
+        map[normalized] = team.strTeamBadge || team.strTeamLogo || team.strTeamBanner || '';
+      }
+    });
+    leagueBadgeCache[key] = map;
+    return map;
+  } catch (error) {
+    console.warn(`تعذر جلب شعارات ${config.name}:`, error);
+    leagueBadgeCache[key] = {};
+    return {};
+  }
+}
+
+function mergeStaticAndLiveRows(config, liveRows, badgeMap) {
+  const liveByName = new Map();
+  liveRows.forEach(row => {
+    liveByName.set(normalizeName(row.rawName), row);
+  });
+
+  const merged = config.teams.map((team, index) => {
+    const apiName = team[0];
+    const arabicName = team[1];
+    const direct = liveByName.get(normalizeName(apiName));
+    let matched = direct;
+
+    if (!matched) {
+      for (const [key, value] of liveByName.entries()) {
+        if (key.includes(normalizeName(apiName)) || normalizeName(apiName).includes(key)) {
+          matched = value;
+          break;
+        }
+      }
+    }
+
+    const staticBadge = (STATIC_LEAGUE_LOGOS[config.logoGroup] || {})[apiName] || '';
+    const badge = staticBadge || matched?.badge || badgeMap[normalizeName(apiName)] || '';
+    return {
+      rank: matched ? matched.rank : 0,
+      apiName,
+      teamName: arabicName,
+      played: matched?.played ?? 0,
+      wins: matched?.wins ?? 0,
+      draws: matched?.draws ?? 0,
+      losses: matched?.losses ?? 0,
+      points: matched?.points ?? 0,
+      goalsFor: matched?.goalsFor ?? 0,
+      goalsAgainst: matched?.goalsAgainst ?? 0,
+      badge
+    };
+  });
+
+  merged.sort((a, b) => {
+    if (a.points !== b.points) return b.points - a.points;
+    const aDiff = a.goalsFor - a.goalsAgainst;
+    const bDiff = b.goalsFor - b.goalsAgainst;
+    if (aDiff !== bDiff) return bDiff - aDiff;
+    if (a.goalsFor !== b.goalsFor) return b.goalsFor - a.goalsFor;
+    if (a.wins !== b.wins) return b.wins - a.wins;
+    return a.teamName.localeCompare(b.teamName, 'ar');
+  });
+
+  merged.forEach((row, index) => { row.rank = index + 1; });
+  return merged;
+}
+
+function renderMajorLeagueTable(container, leagueId, rows) {
+  const config = getLeagueConfig(leagueId);
+  const updated = leagueStandingsLastUpdated[String(leagueId)];
+  const updatedText = updated
+    ? `آخر تحديث: ${new Date(updated).toLocaleTimeString('ar-DZ', { hour: '2-digit', minute: '2-digit' })}`
+    : 'لم تبدأ مباريات الموسم بعد';
+
+  const rowsHtml = rows.map(team => `
+    <tr>
+      <td class="epl-rank">${escapeHtml(team.rank)}</td>
+      <td>
+        <div class="standings-team-cell">
+          <span class="standings-team-logo-wrap">
+            ${team.badge
+              ? `<img src="${escapeHtml(team.badge)}" alt="${escapeHtml(team.teamName)}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(team.teamName)}&background=0f172a&color=ffffff&size=128&bold=true&format=png';">`
+              : `<img src="https://ui-avatars.com/api/?name=${encodeURIComponent(team.teamName)}&background=0f172a&color=ffffff&size=128&bold=true&format=png" alt="${escapeHtml(team.teamName)}" loading="lazy" decoding="async" referrerpolicy="no-referrer">` }
+            <span class="standings-team-fallback" style="display:${team.badge ? 'none' : 'flex'};">⚽</span>
+          </span>
+          <span class="standings-team-name">${escapeHtml(team.teamName)}</span>
+        </div>
+      </td>
+      <td>${escapeHtml(team.played)}</td>
+      <td>${escapeHtml(team.wins)}</td>
+      <td>${escapeHtml(team.draws)}</td>
+      <td>${escapeHtml(team.losses)}</td>
+      <td>${escapeHtml(team.goalsFor)}</td>
+      <td>${escapeHtml(team.goalsAgainst)}</td>
+      <td class="epl-points">${escapeHtml(team.points)}</td>
+    </tr>
+  `).join('');
+
+  container.innerHTML = `
+    <div class="epl-standings-shell">
+      <div class="epl-standings-header">جدول ${escapeHtml(config.name)} 2026-2027</div>
+      <div class="epl-standings-meta">${updatedText} • يتم التحديث تلقائيًا بعد توفر نتائج جديدة • ${rows.length} ناديًا</div>
+      <div class="epl-standings-table-wrap">
+        <table class="epl-standings-table major-league-table">
+          <thead>
+            <tr>
+              <th>المركز</th><th>الفريق</th><th>لعب</th><th>فاز</th><th>تعادل</th><th>خسر</th><th>له</th><th>عليه</th><th>النقاط</th>
+            </tr>
+          </thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+async function fetchMajorLeagueStandings(leagueId, container, silent = false) {
+  const id = String(leagueId);
+  const config = getLeagueConfig(id);
+  if (!container || !config.teams.length) return;
+
+  const requestId = ++activeLeagueStandingsRequestId;
+  if (!silent) {
+    container.innerHTML = `<div style="text-align:center;padding:28px;color:var(--text-primary);">⏳ جاري تحميل ${escapeHtml(config.name)}...</div>`;
+  }
+
+  try {
+    const [tableResult, badgeMap] = await Promise.allSettled([
+      fetch(`https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=${encodeURIComponent(id)}&s=2026-2027`, {
+        cache: 'no-store', headers: { 'Accept': 'application/json' }
+      }).then(async response => {
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return response.json();
+      }),
+      fetchLeagueBadges(config)
+    ]);
+
+    if (requestId !== activeLeagueStandingsRequestId) return;
+
+    const liveData = tableResult.status === 'fulfilled' ? tableResult.value : {};
+    const liveRows = normalizeLiveRows(liveData.table || liveData.standings || []);
+    const badges = badgeMap.status === 'fulfilled' ? badgeMap.value : {};
+    const rows = mergeStaticAndLiveRows(config, liveRows, badges);
+
+    leagueStandingsLastUpdated[id] = Date.now();
+    renderMajorLeagueTable(container, id, rows);
+  } catch (error) {
+    console.error(`Standings error for ${config.name}:`, error);
+    const fallbackRows = buildStaticRows(config);
+    renderMajorLeagueTable(container, id, fallbackRows);
+  }
+}
+
+function stopLeagueStandingsAutoRefresh() {
+  if (leagueStandingsRefreshTimer) {
+    clearInterval(leagueStandingsRefreshTimer);
+    leagueStandingsRefreshTimer = null;
+  }
+}
+
+function startLeagueStandingsAutoRefresh() {
+  stopLeagueStandingsAutoRefresh();
+  leagueStandingsRefreshTimer = setInterval(() => {
+    const detailsPage = document.getElementById('tab-league-details');
+    if (detailsPage?.classList.contains('active') && activeLeagueDetailsId && activeLeagueStandingsContainer) {
+      fetchMajorLeagueStandings(activeLeagueDetailsId, activeLeagueStandingsContainer, true);
+    }
+  }, 2 * 60 * 1000);
+
+  if (!leagueStandingsVisibilityHandlerAttached) {
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && activeLeagueDetailsId && activeLeagueStandingsContainer) {
+        const detailsPage = document.getElementById('tab-league-details');
+        if (detailsPage?.classList.contains('active')) {
+          fetchMajorLeagueStandings(activeLeagueDetailsId, activeLeagueStandingsContainer, true);
+        }
+      }
+    });
+    leagueStandingsVisibilityHandlerAttached = true;
+  }
+}
+
 function openLeagueDetails(leagueId, leagueName, pushState = true) {
-  document.getElementById('league-details-title').innerText = 'ترتيب ' + leagueName + ' (2026-2027)';
+  const id = String(leagueId);
+  const config = getLeagueConfig(id, leagueName);
+  const titleEl = document.getElementById('league-details-title');
   const container = document.getElementById('league-standings-container');
-  container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-primary);">جاري جلب جدول الترتيب لموسم 2026-2027...</div>';
-  
+  if (!container) return;
+
+  activeLeagueDetailsId = id;
+  activeLeagueStandingsContainer = container;
+  activeLeagueStandingsRequestId++;
+  if (titleEl) titleEl.innerText = `ترتيب ${config.name}`;
   switchPage('league-details', 'تفاصيل الدوري', pushState);
+  fetchMajorLeagueStandings(id, container, false);
+  startLeagueStandingsAutoRefresh();
+}
 
-  const apiUrl = `https://www.thesportsdb.com/api/v1/json/3/lookuptable.php?l=${leagueId}&s=2026-2027`;
+function restoreThemeState() {
+  let theme = 'dark';
+  let base = 'dark';
+  try {
+    base = localStorage.getItem('ipo_theme_base') === 'light' ? 'light' : 'dark';
+    theme = localStorage.getItem('ipo_theme') || base;
+  } catch (e) {}
 
-  fetch(apiUrl)
-      .then(response => response.json())
-      .then(data => {
-          let tableData = data.table || data.standings || [];
-          
-          if (!tableData || tableData.length === 0) {
-              container.innerHTML = '<div style="text-align: center; padding: 20px; color: var(--text-primary);">⚠️ لا توجد بيانات متاحة لهذا الدوري حالياً.</div>';
-              return;
-          }
-
-          let html = `
-              <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 11px;">
-                  <thead>
-                      <tr style="border-bottom: 1px solid var(--card-border); opacity: 0.8;">
-                          <th style="padding: 6px;">#</th>
-                          <th style="padding: 6px; text-align: right;">الفريق</th>
-                          <th style="padding: 6px;">لعب</th>
-                          <th style="padding: 6px;">فاز</th>
-                          <th style="padding: 6px;">تعادل</th>
-                          <th style="padding: 6px;">خسر</th>
-                          <th style="padding: 6px;">نقاط</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-          `;
-
-          tableData.forEach((item, index) => {
-              let rank = item.intRank || (index + 1);
-              let teamName = item.strTeam || item.team_name || 'فريق';
-              let played = item.intPlayed || item.played || 0;
-              let win = item.intWin || item.won || 0;
-              let draw = item.intDraw || item.draw || 0;
-              let loss = item.intLoss || item.lost || 0;
-              let points = item.intPoints || item.points || 0;
-              let badge = item.strTeamBadge || item.logo || '';
-
-              html += `
-                  <tr style="border-bottom: 1px solid var(--card-border);">
-                      <td style="padding: 6px; font-weight: bold;">${rank}</td>
-                      <td style="padding: 6px; text-align: right; display: flex; align-items: center; gap: 6px;">
-                          ${badge ? `<img src="${badge}" style="width: 14px; height: 14px; object-fit: contain;">` : ''}
-                          <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 90px;">${teamName}</span>
-                      </td>
-                      <td style="padding: 6px;">${played}</td>
-                      <td style="padding: 6px;">${win}</td>
-                      <td style="padding: 6px;">${draw}</td>
-                      <td style="padding: 6px;">${loss}</td>
-                      <td style="padding: 6px; font-weight: bold; color: var(--accent-color);">${points}</td>
-                  </tr>
-              `;
-          });
-
-          html += `</tbody></table>`;
-          container.innerHTML = html;
-      })
-      .catch(error => {
-          console.error('Error fetching standings:', error);
-          container.innerHTML = '<div style="text-align: center; padding: 20px; color: #ef4444;">⚠️ حدث خطأ أثناء الاتصال وجلب بيانات الترتيب. تأكد من اتصال الإنترنت.</div>';
-      });
+  const user = getCurrentIPOUser();
+  if (theme === 'red' && !(isVerifiedOwner(user) && Boolean(user.redThemeUnlocked))) {
+    theme = base;
+    try { localStorage.setItem('ipo_theme', theme); } catch (e) {}
+  }
+  document.documentElement.setAttribute('data-theme', theme);
+  updateThemeButtonUI();
+  updateHeaderAppLogo(theme === 'light' ? 'light' : 'dark');
+  updateRedThemeUI();
 }
 
 window.onload = function() {
-  // استرجاع آخر وضع مظهر محفوظ
-  let savedTheme = 'dark';
-  try { savedTheme = localStorage.getItem('ipo_theme') === 'light' ? 'light' : 'dark'; } catch (e) {}
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  const themeText = document.getElementById('theme-text');
-  const themeIcon = document.getElementById('theme-icon-symbol');
-  if (themeText) themeText.textContent = savedTheme === 'light' ? 'الوضع الفاتح' : 'الوضع الداكن';
-  if (themeIcon) themeIcon.textContent = savedTheme === 'light' ? '☀️' : '🌙';
-  const appLogoImg = document.getElementById('header-app-logo');
-  if (appLogoImg) appLogoImg.src = savedTheme === 'light' ? logoLight : logoDark;
-
   checkUserSession();
+  restoreThemeState();
   if (!window.location.hash) history.replaceState({ tab: 'home' }, '', '#home');
 
   const splash = document.getElementById('app-splash');
   if (splash) setTimeout(() => splash.classList.add('is-hidden'), 1300);
 };
+function saveCurrentIPOUser(user) {
+  return syncIPOUserEverywhere(user);
+}
+
 function getCurrentIPOUser() {
   try {
     const raw = localStorage.getItem('ipo_user_account');
@@ -615,7 +1191,10 @@ function syncIPOUserEverywhere(user) {
     avatar: user.avatar || 'https://i.ibb.co/6y45s1x/user.png',
     cover: user.cover || '',
     favTeamName: String(user.favTeamName || '').trim(),
-    favTeamLogo: ''
+    favTeamLogo: '',
+    points: Math.max(0, Number.isFinite(Number(user.points)) ? Math.floor(Number(user.points)) : 0),
+    animatedAvatarUnlocked: Boolean(user.animatedAvatarUnlocked),
+    redThemeUnlocked: Boolean(user.redThemeUnlocked)
   };
 
   try {
@@ -667,7 +1246,10 @@ function buildIPOProfileUser() {
     avatar: current.avatar || localStorage.getItem('ipo_user_avatar') || 'https://i.ibb.co/6y45s1x/user.png',
     cover: current.cover || localStorage.getItem('ipo_user_cover') || '',
     favTeamName: current.favTeamName || localStorage.getItem('ipo_fav_team') || 'اختر فريقك المفضّل',
-    favTeamLogo: current.favTeamLogo || localStorage.getItem('ipo_fav_team_logo') || 'https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg'
+    favTeamLogo: current.favTeamLogo || localStorage.getItem('ipo_fav_team_logo') || 'https://i.ibb.co/96v5K7n/6010303610153012976-121.jpg',
+    points: Math.max(0, Number.isFinite(Number(current.points)) ? Math.floor(Number(current.points)) : 0),
+    animatedAvatarUnlocked: Boolean(current.animatedAvatarUnlocked),
+    redThemeUnlocked: Boolean(current.redThemeUnlocked)
   };
   return user;
 }
@@ -694,6 +1276,12 @@ function applyIPOProfileUser(user) {
   if (miniAvatar) miniAvatar.src = displayAvatar;
   if (bioEl) bioEl.textContent = safeUser.bio || 'أضف نبذة تعريفية عنك...';
   if (teamNameEl) teamNameEl.textContent = safeUser.favTeamName || 'اختر فريقك المفضّل';
+  updatePointsUI(safeUser.points || 0);
+  updateRedThemeUI();
+  const gifNote = document.querySelector('.profile-gif-note');
+  if (gifNote) gifNote.textContent = owner || safeUser.animatedAvatarUnlocked
+    ? '✓ ميزة GIF المتحركة مفعّلة في حسابك.'
+    : 'GIF متحرك متاح بعد شراء الميزة بـ300 نقطة.';
   refreshPublicOwnerBranding();
 
   if (coverEl) {
@@ -822,8 +1410,8 @@ function handleProfileAvatarDraft(event) {
     event.target.value = '';
     return;
   }
-  if (file.type === 'image/gif' && !isVerifiedOwner()) {
-    alert('ميزة الصورة المتحركة GIF متاحة للحساب الموثق فقط.');
+  if (file.type === 'image/gif' && !(isVerifiedOwner() || buildIPOProfileUser().animatedAvatarUnlocked)) {
+    alert('ميزة الصورة المتحركة غير مفعّلة. افتح صفحة «نقاطي» واشترِ الميزة مقابل 300 نقطة.');
     event.target.value = '';
     return;
   }
@@ -907,6 +1495,8 @@ window.addEventListener('DOMContentLoaded', function () {
   history.replaceState({ tab: 'home' }, '', '#home');
   switchPage('home', 'IPO TV', false);
   checkUserSession();
+  updatePointsUI(getCurrentIPOUser().points || 0);
+  updateRedThemeUI();
   watchPublicProfileBranding();
 
   const bio = document.getElementById('profile-edit-bio');
